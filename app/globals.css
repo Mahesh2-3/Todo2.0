@@ -1,26 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+@theme {
+  --color-primary: #FF6767;
+  --color-secondary: #F8F8F8;
+  --color-brick: #DADDE4;
+  --font-inter:var(--font-inter);
+  --shadow-dark:0px 2px 19px -10px #FF6767;
+  --breakpoint-lgg:860px;
+  --breakpoint-lg7:700px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.hide-scrollbar {
+  overflow-y: scroll;              /* enables scrolling */
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* Internet Explorer 10+ */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;                  /* Chrome, Safari, Opera */
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 0;
+}
+
+button{
+  cursor: pointer;
 }
