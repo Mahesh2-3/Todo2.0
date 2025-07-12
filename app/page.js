@@ -27,9 +27,9 @@ const Home = () => {
   if (!user) return null;
 
   return (
-    <div className="w-[100vw] font-inter min-h-[100vh] h-full overflow-y-auto hide-scrollbar">
+    <div className="w-[100vw] font-inter min-h-screen overflow-y-auto hide-scrollbar">
       <TopLoader />
-      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary opacity-20 blur-[100px]"></div></div>      <div className="2xl:w-[1500px] w-full relative h-screen flex flex-col justify-between lg::px-4 py-2 overflow-hidden mx-auto">
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary opacity-20 blur-[100px]"></div></div>      <div className="2xl:w-[1500px] w-full relative h-screen flex flex-col justify-between overflow-y-auto mx-auto hide-scrollbar">
         <Navbar notifi={() => setNotificationsOn(!NotificationsOn)} />
         <Body />
         {NotificationsOn && (

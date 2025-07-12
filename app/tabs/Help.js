@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import emailjs from "emailjs-com";
@@ -11,7 +11,7 @@ const Help = () => {
   const [isSending, setIsSending] = useState(false);
   const [sparkleIndex, setSparkleIndex] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const {loading, setLoading} =useLoading();
+  const { loading, setLoading } = useLoading();
 
   const {
     register,
@@ -27,9 +27,9 @@ const Help = () => {
 
   const handleStarClick = (star) => {
     if (rating === star) {
-      setRating(star - 1); // Unselect just the last clicked star
+      setRating(star - 1);
     } else {
-      setRating(star); // Set the new rating
+      setRating(star);
     }
     setSparkleIndex(star);
     setTimeout(() => setSparkleIndex(null), 500);
@@ -37,12 +37,11 @@ const Help = () => {
 
   const onSubmit = async (data) => {
     if (!data.userName || !data.userEmail || !data.message) return;
-    setLoading(true)
+    setLoading(true);
     setIsSending(true);
     const date = new Date().toLocaleString();
 
     try {
-      // Send to admin
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAIL_SERVICEID,
         process.env.NEXT_PUBLIC_EMAIL_TEMPLATE1,
@@ -57,7 +56,6 @@ const Help = () => {
         process.env.NEXT_PUBLIC_EMAIL_PUBLICKEY
       );
 
-      // Send to user
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAIL_SERVICEID,
         process.env.NEXT_PUBLIC_EMAIL_TEMPLATE2,
@@ -89,26 +87,26 @@ const Help = () => {
       alert("Failed to send message. Please try again.");
     } finally {
       setIsSending(false);
+      setLoading(false);
     }
-    setLoading(false)
   };
 
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="text-green-500 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <div className="text-green-500 text-5xl sm:text-6xl mb-4">✓</div>
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2">
             {selectedOption === "report" ? "Report Submitted" : "Thank You!"}
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm sm:text-base text-gray-600 mb-6">
             {selectedOption === "report"
               ? "We've received your report and will look into it soon."
               : "Your feedback means a lot to us!"}
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
-            className="bg-primary cursor-pointer text-white px-6 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+            className="bg-primary text-sm sm:text-base cursor-pointer text-white px-6 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors"
           >
             Submit Another
           </button>
@@ -119,10 +117,10 @@ const Help = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-dark sm:px-12 py-10 px-4 h-full max-w-[890px] m-auto w-full">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800 mb-2">
         {selectedOption === "report" ? "Report an Issue" : "Share Feedback"}
       </h1>
-      <p className="text-center text-gray-600 mb-8">
+      <p className="text-sm sm:text-base text-center text-gray-600 mb-8">
         {selectedOption === "report"
           ? "Help us improve by reporting problems you encounter"
           : "We'd love to hear your thoughts about our service"}
@@ -131,46 +129,49 @@ const Help = () => {
       {/* Option Selector */}
       <div className="flex space-x-4 mb-8 justify-center">
         <button
-          className={`px-6 py-3 cursor-pointer rounded-lg font-semibold transition-colors ${selectedOption === "report"
-            ? "bg-primary text-white shadow-md"
-            : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
+          className={`px-6 py-3 text-sm sm:text-base cursor-pointer rounded-lg font-semibold transition-colors ${
+            selectedOption === "report"
+              ? "bg-primary text-white shadow-md"
+              : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+          }`}
           onClick={() => handleOptionChange("report")}
         >
           Report a Problem
         </button>
         <button
-          className={`px-6 py-3 cursor-pointer rounded-lg font-semibold transition-colors ${selectedOption === "feedback"
-            ? "bg-primary text-white shadow-md"
-            : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
+          className={`px-6 py-3 text-sm sm:text-base cursor-pointer rounded-lg font-semibold transition-colors ${
+            selectedOption === "feedback"
+              ? "bg-primary text-white shadow-md"
+              : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+          }`}
           onClick={() => handleOptionChange("feedback")}
         >
           Feedback
         </button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-sm sm:text-base">
         {/* User Name */}
         <div>
-          <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="userName" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             Your Name <span className="text-red-500">*</span>
           </label>
           <input
             id="userName"
             {...register("userName", { required: "Name is required" })}
             placeholder="John Doe"
-            className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent ${errors.userName ? "border-red-500" : "border-gray-300"
-              }`}
+            className={`w-full border rounded-lg p-2 sm:p-3 focus:ring-2 focus:ring-primary focus:border-transparent ${
+              errors.userName ? "border-red-500" : "border-gray-300"
+            }`}
           />
           {errors.userName && (
-            <p className="mt-1 text-sm text-red-500">{errors.userName.message}</p>
+            <p className="mt-1 text-xs text-red-500">{errors.userName.message}</p>
           )}
         </div>
 
         {/* User Email */}
         <div>
-          <label htmlFor="userEmail" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="userEmail" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             Your Email <span className="text-red-500">*</span>
           </label>
           <input
@@ -184,17 +185,18 @@ const Help = () => {
               },
             })}
             placeholder="your@email.com"
-            className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent ${errors.userEmail ? "border-red-500" : "border-gray-300"
-              }`}
+            className={`w-full border rounded-lg p-2 sm:p-3 focus:ring-2 focus:ring-primary focus:border-transparent ${
+              errors.userEmail ? "border-red-500" : "border-gray-300"
+            }`}
           />
           {errors.userEmail && (
-            <p className="mt-1 text-sm text-red-500">{errors.userEmail.message}</p>
+            <p className="mt-1 text-xs text-red-500">{errors.userEmail.message}</p>
           )}
         </div>
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             {selectedOption === "report" ? "Describe the issue" : "Your feedback"}{" "}
             <span className="text-red-500">*</span>
           </label>
@@ -213,27 +215,29 @@ const Help = () => {
                 ? "Please describe the problem in detail..."
                 : "What do you like or what can we improve?"
             }
-            className={`w-full border rounded-lg p-4 focus:ring-2 focus:ring-primary focus:border-transparent ${errors.message ? "border-red-500" : "border-gray-300"
-              }`}
+            className={`w-full border rounded-lg p-3 sm:p-4 focus:ring-2 focus:ring-primary focus:border-transparent ${
+              errors.message ? "border-red-500" : "border-gray-300"
+            }`}
           />
           {errors.message && (
-            <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>
+            <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>
           )}
         </div>
 
         {/* Stars for Feedback */}
         {selectedOption === "feedback" && (
           <div className="flex flex-col items-center">
-            <p className="text-sm font-medium text-gray-700 mb-2">
+            <p className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
               How would you rate your experience?
             </p>
             <div className="flex gap-2 mb-4 relative">
               {[1, 2, 3, 4, 5].map((star) => (
                 <div key={star} className="relative">
                   <FaStar
-                    size={28}
-                    className={`cursor-pointer transition-all ${star <= rating ? "text-yellow-400" : "text-gray-300"
-                      } ${star === sparkleIndex ? "scale-125" : ""}`}
+                    size={24}
+                    className={`cursor-pointer transition-all ${
+                      star <= rating ? "text-yellow-400" : "text-gray-300"
+                    } ${star === sparkleIndex ? "scale-125" : ""}`}
                     onClick={() => handleStarClick(star)}
                   />
                   {star === sparkleIndex && (
@@ -252,8 +256,9 @@ const Help = () => {
           <button
             type="submit"
             disabled={isSending}
-            className={`bg-primary text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg ${isSending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-dark"
-              }`}
+            className={`bg-primary text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg text-sm sm:text-base ${
+              isSending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-dark"
+            }`}
           >
             {isSending ? (
               <div className="flex items-center">

@@ -59,11 +59,11 @@ const Body = () => {
     return foundItem ? foundItem.component : null;
   };
   return (
-    <div className="flex justify-between relative lg:h-[82%] h-[85%]">
+    <div className="flex justify-between relative lg:h-[82%] h-[88%]">
 {deleteClicked && <DeleteAccount setdeleteOpen={setdeleteClicked} />}
       {/* Sidebar */}
       <div
-        className={`z-50 xl:w-[28%] w-[350px] h-full bg-primary text-white flex flex-col justify-between rounded-tr-2xl py-6 px-4
+        className={`z-50 xl:w-[28%] sm:w-[350px] w-[300px] h-full bg-primary text-white flex flex-col justify-between rounded-tr-2xl py-6 px-4
           xl:static absolute top-0 left-0 transition-transform duration-300 ease-in-out
           ${Menutab ? "translate-x-0" : "-translate-x-[150%]"} xl:translate-x-0`}
       >

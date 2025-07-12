@@ -151,7 +151,7 @@ const Diary = () => {
       </div>
 
       {/* Diary Input Area */}
-      <div className="flex-1 w-full px-6 py-10 hide-scrollbar relative">
+      <div className="flex-1 w-full sm:px-6 py-10 hide-scrollbar relative">
         <div className="relative w-full">
           <textarea
             autoFocus

@@ -34,15 +34,15 @@ const handleSearchIconClick = () => {
   }
 };
   return (
-    <div className="w-full h-[10%] px-8 flex items-center  bg-white sm:justify-center justify-between rounded-md  shadow-dark">
+    <div className="w-full md:h-[10%] h-[7%] px-8 flex items-center bg-white sm:justify-center justify-between rounded-md  shadow-dark">
       {/* Logo */}
-      <div className="text-3xl sm:w-[20%] w-fit h-full font-bold">
-        <Image width={95} height={95}  className="h-full w-auto" src="/Logo.png" alt="" />
+      <div className="sm:w-[20%] sm:scale-[1] scale-[0.9] w-fit h-full font-bold">
+        <Image width={95} height={95}  className="h-full  w-auto" src="/Logo.png" alt="logo image" />
       </div>
-      <div className="sm:w-[80%] w-fit flex items-center lg7:justify-between justify-end sm:gap-4 gap-2">
+      <div className="sm:w-[80%] w-fit flex items-center lg7:justify-between justify-end sm:gap-4 gap-0">
 
       
-        <div className={`flex ${!(activeTab == "Daily Task" || activeTab == "Scheduled Tasks") && "z-[-100]"} items-center relative gap-2 lg7:border-[1px] border-0 border-primary rounded-lg lgg:px-2 px-3 py-1 w-fit`}>
+        <div className={`flex ${!(activeTab == "Daily Task" || activeTab == "Scheduled Tasks") && "z-[-100]"} items-center relative gap-2 lg7:border-[1px] border-0 border-primary rounded-lg lgg:px-2 lg7:px-3 px-0 py-1 w-fit`}>
           <input
             ref={inputRef}
             type="text"
@@ -54,24 +54,24 @@ const handleSearchIconClick = () => {
           <button
             type="button"
             onClick={handleSearchIconClick}
-            className="p-2 cursor-pointer  text-white bg-primary rounded-md"
+            className="p-2 cursor-pointer sm:scale-[1] scale-[0.8]  text-white bg-primary rounded-md"
           >
             <FaSearch />
           </button>
         </div>
 
         {/* Icons + Date */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center sm:gap-6 gap-2">
           <button
             onClick={() => {
               setNotificationsOn(!NotificationsOn)
               notifi(NotificationsOn)
             }}
-            className="p-2 cursor-pointer bg-primary text-white rounded-md"
+            className="p-2 sm:scale-[1] scale-[0.8] cursor-pointer bg-primary text-white rounded-md"
           >
             <FaBell />
           </button>
-          <div className="text-right">
+          <div className="text-right sm:text-base text-xs">
             <p className="font-semibold">{day}</p>
             <p className="text-blue-500">{formattedDate}</p>
           </div>

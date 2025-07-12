@@ -197,10 +197,10 @@ const ScheduledTasks = () => {
           }} className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`} >Status</div>
         </div>
         {(tab == "Both" || tab == "Tasks") && (
-          <div className="lgg:w-1/2 w-full h-full shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
+          <div className="lgg:w-1/2 w-full sm:h-full h-[93%] shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
             {/* Floating Plus Button - stays fixed */}
             <div
-              className="absolute w-[50px] z-[10] cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary bottom-10 right-3"
+              className="absolute w-[50px] z-[10] cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary sm:bottom-10 bottom-20 right-3"
               onClick={() => setShowNewTask(true)}
             >
               <FaPlus size={20} color="white" />
@@ -268,17 +268,17 @@ const ScheduledTasks = () => {
           </div>
         )}
         {(tab == "Both" || tab == "Status") && (
-          <div className="lgg:w-1/2 w-full h-full flex flex-col gap-4">
+          <div className="lgg:w-1/2 w-full sm:h-full h-[93%] flex flex-col gap-4">
             {/* Status Summary */}
-            <div className="h-[40%] shadow-dark p-6 rounded-t-2xl flex flex-col">
-              <h3 className="text-primary font-semibold mb-4 flex items-center gap-2">
+            <div className="sm:h-[40%] h-[30%] relative shadow-dark p-6 rounded-t-2xl flex flex-col">
+              <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base text-[14px] mb-4 flex items-center gap-2">
                 <Image width={24} height={24} src="/Task_complete.png" alt="" /> Task Status
               </h3>
               <div className="w-full h-full flex justify-center items-center">
-                <div className="flex justify-around w-full items-center">
+                <div className="flex justify-around w-full items-center  sm:pt-0 pt-5">
                   {/* Completed */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-[100px] h-[100px]">
+                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (completed / totalTasks) * 100 : 0}
@@ -302,7 +302,7 @@ const ScheduledTasks = () => {
 
                   {/* In Progress */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-[100px] h-[100px]">
+                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (inProgress / totalTasks) * 100 : 0}
@@ -326,7 +326,7 @@ const ScheduledTasks = () => {
 
                   {/* Pending */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-[100px] h-[100px]">
+                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (Pending / totalTasks) * 100 : 0}
@@ -352,7 +352,7 @@ const ScheduledTasks = () => {
             </div>
 
             {/* Filtered Task List */}
-            <div className="h-[60%] shadow-dark p-4 rounded-b-2xl relative  flex flex-col overflow-y-scroll items-start gap-4 hide-scrollbar">
+            <div className="sm:h-[60%] h-[70%] shadow-dark p-4 rounded-b-2xl relative  flex flex-col overflow-y-scroll items-start gap-4 hide-scrollbar">
               {/* Custom Dropdown */}
               <div className="flex justify-end w-full">
                 <div className="relative w-48 mb-4">

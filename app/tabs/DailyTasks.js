@@ -169,7 +169,7 @@ const DailyTasks = () => {
 
   const renderStatusChart = (label, value, color) => (
     <div className="flex flex-col items-center gap-2">
-      <div className="w-[100px] h-[100px]">
+      <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
         <CircularProgressbar
           strokeWidth={10}
           value={value || 0}
@@ -194,9 +194,9 @@ const DailyTasks = () => {
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <div className="lgg:text-3xl text-2xl flex justify-start items-center gap-2 font-semibold">
+      <div className="lgg:text-3xl sm:text-2xl text-lg flex justify-start items-center gap-2 font-semibold">
         Welcome back,{" "}
-        <span className="text-primary relative -top-0.5 lgg:text-4xl text-3xl">{user.username}</span>{" "}
+        <span className="text-primary relative -top-0.5 lgg:text-4xl sm:text-3xl text-xl">{user.username}</span>{" "}
         <Image width={36} height={36} className="lgg:size-[36px] size-[32px] relative -top-1.5" src="/hand_wave.png" alt="" />
       </div>
 
@@ -222,9 +222,9 @@ const DailyTasks = () => {
           }} className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`} >Status</div>
         </div>
         {(tab == "Both" || tab == "Tasks") && (
-          <div className="lgg:w-1/2 w-full mx-auto h-full shadow-md border border-brick sm:p-6 p-3 relative rounded-2xl">
+          <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] shadow-md border border-brick sm:p-6 p-3 relative rounded-2xl">
             <div
-              className="absolute bottom-10 right-3 w-[50px] h-[50px] flex items-center justify-center bg-primary rounded-full cursor-pointer z-10"
+              className="absolute lg7:bottom-10 bottom-20 right-3 w-[50px] h-[50px] flex items-center justify-center bg-primary rounded-full cursor-pointer z-10"
               onClick={() => setShowNewTask(true)}
             >
               <FaPlus size={20} color="white" />
@@ -246,7 +246,7 @@ const DailyTasks = () => {
               {tasks.filter((t) =>
                 t.title.toLowerCase().includes(searchQuery.toLowerCase())
               ).length === 0 ? (
-                <div className="h-full">
+                <div className="h-full sm:text-base text-xs">
                   {loading ? (<span className="flex flex-col items-center justify-center gap-3 h-full"><AiOutlineLoading3Quarters className="animate-spin" size={30}/> Loading...</span>) :<span className="flex flex-col items-center justify-center gap-3 h-full"><FaRegClipboard size={30} /> No Tasks Found</span>}
                 </div>
               ) : (
@@ -273,12 +273,12 @@ const DailyTasks = () => {
           </div>
         )}
         {(tab == "Both" || tab == "Status") && (
-          <div className="lgg:w-1/2 w-full mx-auto h-full overflow-y-scroll hide-scrollbar flex flex-col gap-4">
-            <div className="h-[40%] w-full  border border-brick shadow-md sm:p-6 p-3 rounded-2xl">
-              <h3 className="text-primary font-semibold mb-4 flex items-center gap-2">
+          <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] overflow-y-scroll hide-scrollbar flex flex-col gap-4">
+            <div className="sm:h-[40%] h-[30%] w-full relative border border-brick shadow-md sm:p-6 p-3 rounded-2xl">
+              <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base text-[14px] mb-4 flex items-center gap-2">
                 <Image width={24} height={24} src="/Task_complete.png" alt="" /> Task Status
               </h3>
-              <div className="flex justify-around items-center h-full">
+              <div className="flex justify-around items-center h-full pt-7">
                 {renderStatusChart(
                   "Completed",
                   (statusCount("Completed") / totalTasks) * 100,
@@ -297,7 +297,7 @@ const DailyTasks = () => {
               </div>
             </div>
 
-            <div className="flex h-[60%]  border border-brick shadow-md bg-white w-full p-4 pb-8 rounded-2xl relative overflow-y-scroll hide-scrollbar  flex-col gap-4">
+            <div className="flex h-[67%]  border border-brick shadow-md bg-white w-full p-4 pb-8 rounded-2xl relative overflow-y-scroll hide-scrollbar  flex-col gap-4">
               <div className="flex justify-end w-full">
                 <div className="relative w-48 mb-4">
                   <div

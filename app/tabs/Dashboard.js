@@ -144,7 +144,7 @@ const Dashboard = () => {
   const SummaryBox = ({ label, value, color }) => (
     <div className="flex flex-col items-center">
       <CircularProgressbar
-        className="w-[100px] h-[100px]"
+        className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]"
         strokeWidth={10}
         value={counts.total ? (value / counts.total) * 100 : 0}
         text={`${counts.total ? Math.round((value / counts.total) * 100) : 0}%`}
@@ -190,9 +190,9 @@ const Dashboard = () => {
         {(tab == "Status" || tab== "Both") && (
           <div className="lgg:w-1/2 w-full h-full  flex flex-col gap-4">
             {/* Progress Summary */}
-            <div className="h-[40%] shadow-dark sm:p-6 p-2 rounded-2xl">
-              <h3 className="text-primary font-semibold sm:mb-4 px-4 pt-4">Task Summary</h3>
-              <div className="flex justify-around items-center h-full">
+            <div className="sm:h-[40%] h-[30%] shadow-dark sm:p-6 p-2 rounded-2xl">
+              <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">Task Summary</h3>
+              <div className="flex justify-around items-center h-full sm:pt-0 pt-10">
                 <SummaryBox
                   label="Completed"
                   value={counts.completed}
@@ -212,7 +212,7 @@ const Dashboard = () => {
             </div>
 
             {/* Expiring */}
-            <div className="h-[60%] shadow-dark p-4 rounded-2xl space-y-4 pb-20 relative">
+            <div className="sm:h-[60%] h-[70%] shadow-dark p-4 rounded-2xl space-y-4 pb-20 relative">
               <h3 className="absolute top-6 right-4 bg-white p-4 z-10 text-red-500 font-semibold">
                 Tasks Expiring Tomorrow
               </h3>
@@ -243,7 +243,7 @@ const Dashboard = () => {
         {(tab == "Tasks"  || tab== "Both" )&& (
           <div className="lgg:w-1/2 w-full h-full pb-20 shadow-dark px-6 pt-6 rounded-l-2xl rounded-br-2xl relative">
             {/* Filters */}
-            <div className="absolute top-6 right-4 flex gap-4 bg-white p-2 z-10">
+            <div className="absolute top-6 right-4 flex gap-4 p-2 z-10">
               {/* Date Filter */}
               <Dropdown
                 label={
@@ -328,14 +328,14 @@ const Dashboard = () => {
 
 // ─── Reusable tiny components ──────────────────────────────
 const Dropdown = ({ label, open, setOpen, children }) => (
-  <div className="relative w-40">
+  <div className="relative sm:w-40 w-26">
     <div
       onClick={() => setOpen((o) => !o)}
-      className="flex items-center justify-between px-4 py-2 border rounded cursor-pointer bg-white"
+      className="flex items-center justify-between px-4 py-2 border sm:text-base text-sm rounded cursor-pointer bg-white"
     >
       <span>{label}</span>
       <FaChevronDown
-        className={`ml-2 transition-transform ${open ? "rotate-180" : ""}`}
+        className={`ml-2 sm:scale-[1] scale-[0.9] transition-transform ${open ? "rotate-180" : ""}`}
       />
     </div>
     {open && (
