@@ -41,16 +41,20 @@ const Dashboard = () => {
   const [editTask, setEditTask] = useState(null);
 
   // ─── Fetch tasks ─────────────────────────────────────────
-  useEffect(() => {
-    setLoading(true)
-    axios
-      .get(`/api/auth/tasks`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-      .then((res) => setTasks(res.data.tasks))
-      .catch((err) => console.error("Fetch tasks failed:", err))
-      .finally(()=>setLoading(false));
-  }, [user?.token]);
+useEffect(() => {
+  setLoading(true);
+  axios
+    .get(`/api/auth/tasks`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    })
+    .then((res) => {
+      const nonDailyTasks = res.data.tasks.filter((task) => task.isDaily === false);
+      setTasks(nonDailyTasks);
+    })
+    .catch((err) => console.error("Fetch tasks failed:", err))
+    .finally(() => setLoading(false));
+}, [user?.token]);
+
 
   useEffect(() => {
     if (!isMobile) {
