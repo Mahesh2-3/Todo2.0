@@ -119,7 +119,6 @@ const ScheduledTasks = () => {
       console.error("Task creation failed:", errMsg);
     }
     setLoading(false)
-    fetchTasks()
   };
 
   const handleUpdateTask = async (updatedTask) => {

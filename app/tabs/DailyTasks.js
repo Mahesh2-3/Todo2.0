@@ -92,6 +92,25 @@ const DailyTasks = () => {
     }
     setLoading(false)
   };
+  const normalFetchTasks = async () => {
+    setLoading(true)
+    try {
+      const res = await axios.get(`/api/auth/tasks`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const allTasks = res.data.tasks;
+      const todayTasks=[]
+      for (const task of allTasks) {
+        if (task.startDate === today && task.endDate === today) {
+          todayTasks.push(task);
+        }
+      }
+      setTasks(todayTasks)
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+    setLoading(false)
+  };
 
   useEffect(() => {
     fetchTasks();
@@ -127,13 +146,11 @@ const DailyTasks = () => {
     } catch (err) {
       console.error("Add failed:", err);
     }
-    fetchTasks()
     setLoading(false)
   };
 
   const handleUpdateTask = async (updatedTask) => {
     setLoading(true)
-    console.log(updatedTask)
     try {
       const res = await axios.put(
         `/api/auth/tasks/${updatedTask._id}`,
@@ -152,6 +169,7 @@ const DailyTasks = () => {
       console.error("Update failed:", err);
     }
     setLoading(false)
+    normalFetchTasks()
   };
 
   const handleDeleteTask = async (taskId) => {
