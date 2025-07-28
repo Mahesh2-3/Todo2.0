@@ -34,7 +34,7 @@ const handleSearchIconClick = () => {
   }
 };
   return (
-    <div className="w-full md:h-[10%] h-[7%] px-8 flex items-center bg-white sm:justify-center justify-between rounded-md  shadow-dark">
+    <div className="w-full md:h-[10%] h-[7%] px-8 flex items-center bg-white sm:justify-center justify-between rounded-md relative  shadow-dark">
       {/* Logo */}
       <div className="sm:w-[20%] sm:scale-[1] scale-[0.9] w-fit h-full font-bold">
         <Image width={95} height={95}  className="h-full  w-auto" src="/Logo.png" alt="logo image" />
@@ -42,14 +42,14 @@ const handleSearchIconClick = () => {
       <div className="sm:w-[80%] w-fit flex items-center lg7:justify-between justify-end sm:gap-4 gap-0">
 
       
-        <div className={`flex ${!(activeTab == "Daily Task" || activeTab == "Scheduled Tasks") && "z-[-100]"} items-center relative gap-2 lg7:border-[1px] border-0 border-primary rounded-lg lgg:px-2 lg7:px-3 px-0 py-1 w-fit`}>
+        <div className={`flex ${!(activeTab == "Daily Task" || activeTab == "Scheduled Tasks") && "z-[-100]"} items-center  gap-2 lg7:border-[1px] border-0 border-primary rounded-lg lgg:px-2 lg7:px-3 px-0 py-1 w-fit`}>
           <input
             ref={inputRef}
             type="text"
             placeholder="Search your task here..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={`searchBar md:w-[350px] w-[300px] lg7:relative absolute bg-white lg7:border-none border-1 border-primary lg7:left-0 -left-[250%]  ${position == "down" ? "-bottom-20" : "bottom-0"} ${position=="up" && isMobile ?"hidden":"block"} cursor-pointer px-4 py-2 rounded-lg outline-none`}
+            className={`searchBar md:w-[350px] w-[300px] lg7:relative absolute bg-white lg7:border-none border-1 border-primary lg7:left-0 left-[25%] z-20  ${position == "down" ? "-bottom-20" : "bottom-0"} ${position=="up" && isMobile ?"hidden":"block"} cursor-pointer px-4 py-2 rounded-lg outline-none`}
           />
           <button
             type="button"
