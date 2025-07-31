@@ -3,12 +3,13 @@ import Task from "@/app/models/Task";
 import { verifyToken } from "@/app/lib/VerifyToken";
 
 
-export async function PUT(req, { params }) {
+export async function PUT(req, context) {
   try {
     await connectDB();
     const userId = await verifyToken(req);
     const updates = await req.json();
 
+    const { params } = await context; // <-- ✅ await here
     const updated = await Task.findOneAndUpdate(
       { _id: params.id, userId },
       updates,
@@ -25,11 +26,12 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
     await connectDB();
     const userId = await verifyToken(req);
 
+    const { params } = await context; // <-- ✅ await here
     const deleted = await Task.findOneAndDelete({
       _id: params.id,
       userId,

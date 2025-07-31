@@ -64,9 +64,8 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
 
   return (
     <div
-      className={`relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full ${
-        isExpired ? "bg-gray-100 opacity-70" : "bg-white"
-      }`}
+      className={`relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full ${isExpired ? "bg-gray-100 opacity-70" : "bg-white"
+        }`}
     >
       {/* Expired Stamp */}
       {isExpired && (
@@ -140,8 +139,13 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
 
       {/* Task Content */}
       <div className="ml-4 flex-1">
-        <h2 className="font-semibold  sm:text-base text-sm line-clamp-1 text-ellipsis">{task.title}</h2>
-        <p className="text-gray-600  sm:text-sm text-xs line-clamp-2 overflow-ellipsis">{task.description}</p>
+        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-all">
+          {task.title}
+        </h2>
+        <p className="text-gray-600 sm:text-sm text-xs line-clamp-2 break-all">
+          {task.description}
+        </p>
+
         <div className="flex mt-4 w-full justify-between items-center">
           <div className="text-xs text-gray-500">
             {task.startDate === task.endDate ? (
@@ -158,8 +162,8 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
                 task.status === "Completed"
                   ? "text-green-500"
                   : task.status === "In Progress"
-                  ? "text-yellow-500"
-                  : "text-primary"
+                    ? "text-yellow-500"
+                    : "text-primary"
               }
             >
               {task.status}
