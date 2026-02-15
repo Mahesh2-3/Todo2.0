@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/Authcontext";
 import axios from "axios";
 import { FaRegClock, FaRegStickyNote } from "react-icons/fa";
 import { useLoading } from "../context/LoadingContext";
+import { useSession } from "next-auth/react";
 
 const Notifications = () => {
-  const { user } = useAuth();
+  const { data: session } = useSession();
   const [expiredTasks, setExpiredTasks] = useState([]);
   const [showAllTasks, setShowAllTasks] = useState(false);
   const [missingDiaryDate, setMissingDiaryDate] = useState(null);
@@ -16,18 +16,16 @@ const Notifications = () => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const headers = { Authorization: `Bearer ${user.token}` };
-
       const tasksResponse = await axios.get(`/api/auth/tasks`, { headers });
       const today = new Date().toISOString().split("T")[0];
 
       const expired = tasksResponse.data.tasks.filter(
-        (task) => task.status !== "Completed" && task.endDate < today
+        (task) => task.status !== "Completed" && task.endDate < today,
       );
       setExpiredTasks(expired);
 
       const pendingCount = tasksResponse.data.tasks.filter(
-        (task) => task.status === "Pending"
+        (task) => task.status === "Pending",
       ).length;
       setPendingTaskCount(pendingCount);
 
@@ -38,9 +36,8 @@ const Notifications = () => {
       const diaryRes = await axios.get(`/api/auth/diary`, {
         params: {
           date: formattedYesterday,
-          userId: user._id,
+          userId: session?.user.id,
         },
-        headers,
       });
 
       const diaryContent = diaryRes?.data?.content || "";
@@ -56,7 +53,7 @@ const Notifications = () => {
 
   useEffect(() => {
     fetchNotifications();
-  }, [user]);
+  }, [session?.user]);
 
   return (
     <div className="w-full max-w-[550px] sm:w-[400px] md:w-[550px] md:h-[700px] h-[600px] p-6 sm:p-8 flex flex-col bg-white shadow-dark gap-6 rounded-2xl md:h-[700px] h-[90vh] max-h-[90vh]">
@@ -70,9 +67,13 @@ const Notifications = () => {
           <div className="border border-yellow-300 bg-yellow-50 text-yellow-800 p-4 rounded-xl flex gap-3 items-start text-sm sm:text-base">
             <FaRegStickyNote className="mt-1 text-lg" />
             <div>
-              <h2 className="font-semibold text-sm sm:text-base mb-1">Diary Missing</h2>
+              <h2 className="font-semibold text-sm sm:text-base mb-1">
+                Diary Missing
+              </h2>
               <p>
-                You didn’t write a diary entry on <strong>{missingDiaryDate}</strong>. Try keeping your streak going!
+                You didn’t write a diary entry on{" "}
+                <strong>{missingDiaryDate}</strong>. Try keeping your streak
+                going!
               </p>
             </div>
           </div>

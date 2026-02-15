@@ -6,6 +6,6 @@ export const verifyToken = (req) => {
     throw new Error("Unauthorized");
   }
   const token = authHeader.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET);
-  return decoded.id;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  return { id: decoded.id };
 };

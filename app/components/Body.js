@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import {
   FaTasks,
@@ -9,8 +9,8 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { PiAddressBookFill } from "react-icons/pi";
 import { SlCalender } from "react-icons/sl";
-import { useAuth } from "../context/Authcontext";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import AccountInfo from "../tabs/AccountInfo";
 import DailyTasks from "../tabs/DailyTasks";
 import Diary from "../tabs/Diary";
@@ -21,25 +21,22 @@ import { RiMenuFill, RiCloseFill } from "react-icons/ri";
 import DeleteAccount from "./DeleteAccount";
 import Image from "next/image";
 import { useActiveTab } from "../context/ActiveTab";
+
 const Body = () => {
-  const { user, logout } = useAuth();
-  const router = useRouter()
-  const { setActiveTab } = useActiveTab()
-  const [activeTab, setactiveTab] = useState("Daily Task");
+  const { data: session } = useSession();
+  const router = useRouter();
+  const { setActiveTab } = useActiveTab();
+  const [activeTab, setactiveTab] = useState("Dashboard");
   const [Menutab, setMenutab] = useState(false);
-  const [deleteClicked, setdeleteClicked] = useState(false)
+  const [deleteClicked, setdeleteClicked] = useState(false);
 
   const handleLogout = () => {
-    logout();
-    router.prefetch("/signin");
+    signOut({ callbackUrl: "/signin" });
   };
 
   const toggleMenu = () => {
     setMenutab((prev) => !prev);
   };
-
-
-
 
   const menuItems = [
     { label: "Daily Task", icon: <FaTasks />, component: <DailyTasks /> },
@@ -60,7 +57,7 @@ const Body = () => {
   };
   return (
     <div className="flex justify-between relative lg:h-[82%] h-[88%]">
-{deleteClicked && <DeleteAccount setdeleteOpen={setdeleteClicked} />}
+      {deleteClicked && <DeleteAccount setdeleteOpen={setdeleteClicked} />}
       {/* Sidebar */}
       <div
         className={`z-50 xl:w-[28%] sm:w-[350px] w-[300px] h-full bg-primary text-white flex flex-col justify-between rounded-tr-2xl py-6 px-4
@@ -81,16 +78,16 @@ const Body = () => {
               height={128}
               priority
               src={
-                user.profileImage ||
+                session?.user.profileImage ||
                 "https://cdn-icons-png.flaticon.com/512/149/149071.png"
               }
               alt="Profile"
               className="w-32 absolute -top-18 h-32 rounded-full border-6 border-white mb-2"
             />
             <div className="text-center mt-20">
-              <p className="font-bold text-lg">{user?.username}</p>
+              <p className="font-bold text-lg">{session?.user.username}</p>
               <p className="text-sm font-semibold text-white/80">
-                {user?.email}
+                {session?.user.email}
               </p>
             </div>
           </div>
@@ -102,13 +99,14 @@ const Body = () => {
                 key={item.label}
                 onClick={() => {
                   setactiveTab(item.label);
-                  setActiveTab(item.label)
+                  setActiveTab(item.label);
                   setMenutab(false);
                 }}
-                className={`flex items-center gap-3 py-2 px-4 rounded cursor-pointer transition-all ${activeTab === item.label
-                  ? "bg-white text-primary font-semibold"
-                  : "hover:bg-white/20"
-                  }`}
+                className={`flex items-center gap-3 py-2 px-4 rounded cursor-pointer transition-all ${
+                  activeTab === item.label
+                    ? "bg-white text-primary font-semibold"
+                    : "hover:bg-white/20"
+                }`}
               >
                 <span className="scale-[1.3]">{item.icon}</span>
                 <span>{item.label}</span>

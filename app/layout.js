@@ -1,11 +1,11 @@
 // app/layout.js or app/layout.tsx
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "./context/Authcontext";
 import { SearchProvider } from "./context/SearchContext";
 import { LoadingProvider } from "./context/LoadingContext";
-import { Inter } from 'next/font/google';
+import { Inter } from "next/font/google";
 import { TabProvider } from "./context/ActiveTab";
+import Providers from "./context/provider";
 
 const inter = Inter({
   variable: "--font-geist-inter",
@@ -29,23 +29,23 @@ export const metadata = {
   icons: {
     icon: "/Logo.png",
     shortcut: "/Logo.png",
-
   },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+    >
       <body>
-        <AuthProvider>
+        <Providers>
           <LoadingProvider>
             <SearchProvider>
-              <TabProvider>
-                {children}
-              </TabProvider>
+              <TabProvider>{children}</TabProvider>
             </SearchProvider>
           </LoadingProvider>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

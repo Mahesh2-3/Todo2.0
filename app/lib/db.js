@@ -1,20 +1,24 @@
-import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
-let isConnected = false;
+const uri = process.env.MONGO_URI;
+const options = {};
 
-export const connectDB = async () => {
-  if (isConnected) return;
+let client;
+let clientPromise;
 
-  try {
-    await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI, {
-      dbName: "todoDB",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+if (!process.env.MONGO_URI) {
+  throw new Error("Please add MONGODB_URI to .env.local");
+}
 
-    isConnected = true;
-    console.log("✅ MongoDB connected");
-  } catch (error) {
-    console.error("❌ MongoDB connection failed:", error);
+if (process.env.NODE_ENV === "development") {
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect();
   }
-};
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
+}
+
+export default clientPromise;

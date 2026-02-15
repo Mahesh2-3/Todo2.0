@@ -1,48 +1,56 @@
-import { connectDB } from "@/app/lib/db";
+import { NextResponse } from "next/server";
+import { connectDB } from "@/app/lib/mongoose";
 import Task from "@/app/models/Task";
-import { verifyToken } from "@/app/lib/VerifyToken";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../[...nextauth]/route";
 
 export async function PUT(req, context) {
   try {
     await connectDB();
-    const userId = await verifyToken(req);
-    const updates = await req.json();
+    const body = await req.json();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session?.user.id;
+    const { id } = await context.params;
 
-    const { params } = await context; // <-- ✅ await here
-    const updated = await Task.findOneAndUpdate(
-      { _id: params.id, userId },
-      updates,
-      { new: true }
+    const task = await Task.findOneAndUpdate(
+      { _id: id, userId }, // make sure this matches verifyToken return
+      body,
+      { new: true },
     );
 
-    if (!updated) {
-      return Response.json({ error: "Task not found" }, { status: 404 });
+    if (!task) {
+      return NextResponse.json({ message: "Task not found" }, { status: 404 });
     }
 
-    return Response.json({ message: "Task updated", task: updated });
-  } catch {
-    return Response.json({ error: "Failed to update task" }, { status: 400 });
+    return NextResponse.json({ task });
+  } catch (error) {
+    return NextResponse.json({ message: "Update failed" }, { status: 500 });
   }
 }
 
 export async function DELETE(req, context) {
   try {
     await connectDB();
-    const userId = await verifyToken(req);
-
-    const { params } = await context; // <-- ✅ await here
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session?.user.id;
+    const { id } = await context.params;
     const deleted = await Task.findOneAndDelete({
-      _id: params.id,
+      _id: id,
       userId,
     });
 
     if (!deleted) {
-      return Response.json({ error: "Task not found" }, { status: 404 });
+      return NextResponse.json({ message: "Task not found" }, { status: 404 });
     }
 
-    return Response.json({ message: "Task deleted" });
-  } catch {
-    return Response.json({ error: "Failed to delete task" }, { status: 400 });
+    return NextResponse.json({ message: "Deleted" });
+  } catch (error) {
+    return NextResponse.json({ message: "Delete failed" }, { status: 500 });
   }
 }

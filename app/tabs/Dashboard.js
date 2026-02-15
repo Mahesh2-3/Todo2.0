@@ -1,7 +1,6 @@
-"use client"
+"use client";
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { useAuth } from "../context/Authcontext";
 import TaskCard from "../components/TaskCard";
 import NewTask from "../components/Newtask";
 import { useMediaQuery } from "react-responsive";
@@ -12,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-circular-progressbar/dist/styles.css";
 import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 const DATE_OPTIONS = ["Total", "Today", "Yesterday"];
 const STATUS_OPTIONS = [
@@ -23,16 +23,16 @@ const STATUS_OPTIONS = [
 ];
 
 const Dashboard = () => {
-  const { user } = useAuth();
-  const {loading, setLoading}=useLoading()
+  const { data: session } = useSession();
+  const { loading, setLoading } = useLoading();
   // ─── State ───────────────────────────────────────────────
 
   const [tasks, setTasks] = useState([]);
   const [dateFilter, setDateFilter] = useState("Total");
   const [statusFilter, setStatusFilter] = useState("All");
   const [customDate, setCustomDate] = useState(new Date());
-  const [tab, settab] = useState("Both")
-  const isMobile = useMediaQuery({ query: "(max-width:860px)" })
+  const [tab, settab] = useState("Both");
+  const isMobile = useMediaQuery({ query: "(max-width:860px)" });
 
   const [showDateDD, setShowDateDD] = useState(false);
   const [showStatusDD, setShowStatusDD] = useState(false);
@@ -42,23 +42,21 @@ const Dashboard = () => {
 
   // ─── Fetch tasks ─────────────────────────────────────────
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios
-      .get(`/api/auth/tasks`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-      .then((res) => setTasks(res.data.tasks))
+      .get(`/api/auth/tasks?type=all`)
+      .then((res) => setTasks(res.data))
       .catch((err) => console.error("Fetch tasks failed:", err))
-      .finally(()=>setLoading(false));
-  }, [user?.token]);
+      .finally(() => setLoading(false));
+  }, [session?.user]);
 
   useEffect(() => {
     if (!isMobile) {
       settab("Both");
     } else {
-      settab("Tasks")
+      settab("Tasks");
     }
-  }, [isMobile])
+  }, [isMobile]);
 
   // ─── Helpers ─────────────────────────────────────────────
   const todayStr = new Date().toISOString().split("T")[0];
@@ -74,7 +72,7 @@ const Dashboard = () => {
       .toISOString()
       .split("T")[0];
 
-    const fTasks = tasks.filter((t) => {
+    const fTasks = tasks?.filter((t) => {
       const matchDate =
         dateFilter === "Total" ||
         (dateFilter === "Today" &&
@@ -98,7 +96,7 @@ const Dashboard = () => {
     });
 
     // Count only filtered tasks
-    fTasks.forEach((t) => {
+    fTasks?.forEach((t) => {
       stats.total++;
       if (t.status === "Completed") stats.completed++;
       else if (t.status === "In Progress") stats.progress++;
@@ -106,10 +104,10 @@ const Dashboard = () => {
     });
 
     // Expiring (today or tomorrow) & not done
-    const expiring = tasks.filter(
+    const expiring = tasks?.filter(
       (t) =>
         (t.endDate === todayStr || t.endDate === tomorrowStr) &&
-        (t.status === "Pending" || t.status === "In Progress")
+        (t.status === "Pending" || t.status === "In Progress"),
     );
 
     return { filteredTasks: fTasks, counts: stats, expiringTasks: expiring };
@@ -118,26 +116,31 @@ const Dashboard = () => {
   // ─── CRUD helpers ────────────────────────────────────────
   const updateTask = async (task) => {
     setLoading(true);
-    const { data } = await axios.put(
-      `/api/auth/tasks/${task._id}`,
-      task,
-      {
-        headers: { Authorization: `Bearer ${user.token}` },
-      }
-    );
+
+    const previousTasks = tasks;
+
     setTasks((prev) =>
-      prev.map((t) => (t._id === data.task._id ? data.task : t))
+      prev.map((t) => (t._id === task._id ? { ...t, ...task } : t)),
     );
-    setLoading(false)
+
+    try {
+      const { data } = await axios.put(`/api/auth/tasks/${task._id}`, task);
+
+      setTasks((prev) =>
+        prev.map((t) => (t._id === data.task._id ? data.task : t)),
+      );
+    } catch (error) {
+      console.error("❌ Update failed, rolling back...", error);
+      setTasks(previousTasks);
+    }
+    setLoading(false);
   };
 
   const deleteTask = async (id) => {
     setLoading(true);
-    await axios.delete(`/api/auth/tasks/${id}`, {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
+    await axios.delete(`/api/auth/tasks/${id}`);
     setTasks((prev) => prev.filter((t) => t._id !== id));
-    setLoading(false)
+    setLoading(false);
   };
 
   // ─── UI helpers ──────────────────────────────────────────
@@ -179,19 +182,31 @@ const Dashboard = () => {
 
       <div className="flex lgg:flex-row flex-col gap-4 h-[90%]">
         <div className="lgg:hidden flex w-full items-center justify-start gap-4">
-          <div onClick={() => {
-            settab("Tasks")
-          }} className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}>Tasks</div>
-          <div onClick={() => {
-            settab("Status")
-          }} className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`} >Status</div>
+          <div
+            onClick={() => {
+              settab("Tasks");
+            }}
+            className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
+          >
+            Tasks
+          </div>
+          <div
+            onClick={() => {
+              settab("Status");
+            }}
+            className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
+          >
+            Status
+          </div>
         </div>
         {/* RIGHT ─ Summary + Expiring ─────────────────────── */}
-        {(tab == "Status" || tab== "Both") && (
+        {(tab == "Status" || tab == "Both") && (
           <div className="lgg:w-1/2 w-full h-full  flex flex-col gap-4">
             {/* Progress Summary */}
             <div className="sm:h-[40%] h-[30%] shadow-dark sm:p-6 p-2 rounded-2xl">
-              <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">Task Summary</h3>
+              <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">
+                Task Summary
+              </h3>
               <div className="flex justify-around items-center h-full sm:pt-0 pt-10">
                 <SummaryBox
                   label="Completed"
@@ -232,7 +247,19 @@ const Dashboard = () => {
                   ))
                 ) : (
                   <div className="h-full">
-                  {loading ? (<span className="flex flex-col items-center justify-center gap-3 h-full"><AiOutlineLoading3Quarters className="animate-spin" size={30}/> Loading...</span>) :<span className="flex flex-col items-center justify-center gap-3 h-full"><FaRegClipboard size={30} /> No Tasks Expiring Tomorrow</span>}
+                    {loading ? (
+                      <span className="flex flex-col items-center justify-center gap-3 h-full">
+                        <AiOutlineLoading3Quarters
+                          className="animate-spin"
+                          size={30}
+                        />{" "}
+                        Loading...
+                      </span>
+                    ) : (
+                      <span className="flex flex-col items-center justify-center gap-3 h-full">
+                        <FaRegClipboard size={30} /> No Tasks Expiring Tomorrow
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -240,7 +267,7 @@ const Dashboard = () => {
           </div>
         )}
         {/* LEFT ─ Filters + List ──────────────────────────── */}
-        {(tab == "Tasks"  || tab== "Both" )&& (
+        {(tab == "Tasks" || tab == "Both") && (
           <div className="lgg:w-1/2 w-full h-full pb-20 shadow-dark px-6 pt-6 rounded-l-2xl rounded-br-2xl relative">
             {/* Filters */}
             <div className="absolute top-6 right-4 flex gap-4 p-2 z-10">
@@ -301,8 +328,8 @@ const Dashboard = () => {
 
             {/* Task List */}
             <div className="pt-18 flex flex-col gap-4 h-full overflow-y-scroll hide-scrollbar">
-              {filteredTasks.length ? (
-                filteredTasks.map((t) => (
+              {filteredTasks?.length ? (
+                filteredTasks?.map((t) => (
                   <TaskCard
                     key={t._id}
                     task={t}
@@ -316,11 +343,24 @@ const Dashboard = () => {
                 ))
               ) : (
                 <div className="h-full">
-                  {loading ? (<span className="flex flex-col items-center justify-center gap-3 h-full"><AiOutlineLoading3Quarters className="animate-spin" size={30}/> Loading...</span>) :<span className="flex flex-col items-center justify-center gap-3 h-full"><FaRegClipboard size={30} /> No Tasks Found</span>}
+                  {loading ? (
+                    <span className="flex flex-col items-center justify-center gap-3 h-full">
+                      <AiOutlineLoading3Quarters
+                        className="animate-spin"
+                        size={30}
+                      />{" "}
+                      Loading...
+                    </span>
+                  ) : (
+                    <span className="flex flex-col items-center justify-center gap-3 h-full">
+                      <FaRegClipboard size={30} /> No Tasks Found
+                    </span>
+                  )}
                 </div>
               )}
             </div>
-          </div>)}
+          </div>
+        )}
       </div>
     </div>
   );

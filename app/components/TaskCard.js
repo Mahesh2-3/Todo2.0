@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import {
   FaEdit,
@@ -64,12 +64,13 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
 
   return (
     <div
-      className={`relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full ${isExpired ? "bg-gray-100 opacity-70" : "bg-white"
-        }`}
+      className={`relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full ${
+        isExpired ? "bg-gray-100 opacity-70" : "bg-white"
+      }`}
     >
       {/* Expired Stamp */}
       {isExpired && (
-        <div className="absolute top-2 right-2 text-[10px] px-2 py-[2px] font-bold text-red-600 border-[1.5px] border-red-600 rotate-[-10deg] uppercase bg-white shadow-sm">
+        <div className="absolute top-2 right-2 text-[10px] px-2 py-0.5 font-bold text-red-600 border-[1.5px] border-red-600 rotate-[-10deg] uppercase bg-white shadow-sm">
           Expired
         </div>
       )}
@@ -110,7 +111,7 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
                 onClick={() => handleStatusChange("Completed")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-[40px] h-[40px] rounded-full border-[4px] border-green-500 bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-green-500 bg-white flex items-center justify-center shadow">
                   <FaCheck color="#22c55e" />
                 </div>
               </motion.div>
@@ -119,7 +120,7 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
                 onClick={() => handleStatusChange("In Progress")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-[40px] h-[40px] rounded-full border-[4px] border-yellow-400 bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-white flex items-center justify-center shadow">
                   <FaHourglassHalf color="#eab308" />
                 </div>
               </motion.div>
@@ -128,7 +129,7 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
                 onClick={() => handleStatusChange("Pending")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-[40px] h-[40px] rounded-full border-[4px] border-primary bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-primary bg-white flex items-center justify-center shadow">
                   <FaRegCircle color="#ef4444" />
                 </div>
               </motion.div>

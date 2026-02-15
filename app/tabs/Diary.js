@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen, FaSave, FaCheck } from "react-icons/fa";
-import { useAuth } from "../context/Authcontext";
 import { useLoading } from "../context/LoadingContext";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 const Diary = () => {
-  const { user } = useAuth();
+  const { data: session } = useSession();
   const [date, setDate] = useState(new Date());
-  const { loading,setLoading } = useLoading()
+  const { loading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(true);
 
@@ -37,8 +37,8 @@ const Diary = () => {
   };
 
   const fetchDiary = async () => {
-    setLoading(true)
-    if (!user?._id && !user?.id) {
+    setLoading(true);
+    if (!session?.user.id) {
       setLoading(false);
       return;
     }
@@ -47,10 +47,7 @@ const Diary = () => {
       const response = await axios.get("/api/auth/diary", {
         params: {
           date: formatDate(date),
-          userId: user._id || user.id,
-        },
-        headers: {
-          Authorization: `Bearer ${user.token}`,
+          userId: session?.user.id,
         },
       });
 
@@ -70,30 +67,22 @@ const Diary = () => {
 
       setContent("");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
-    setLoading(true)
-    if (!user?._id && !user?.id) {
+    setLoading(true);
+    if (!session?.user.id) {
       setLoading(false);
       return;
     }
     try {
-      await axios.post(
-        "/api/auth/diary",
-        {
-          userId: user._id || user.id,
-          date: formatDate(date),
-          content: typeof content === "string" ? content : "",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      await axios.post("/api/auth/diary", {
+        userId: session?.user.id,
+        date: formatDate(date),
+        content: typeof content === "string" ? content : "",
+      });
       setSaved(true);
     } catch (error) {
       console.error("❌ Failed to save diary");
@@ -106,12 +95,14 @@ const Diary = () => {
       } else {
         console.error("Request setup error:", error.message);
       }
-    } finally { setLoading(false) }
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (user) fetchDiary();
-  }, [date, user]);
+    if (session?.user) fetchDiary();
+  }, [date, session?.user]);
 
   return (
     <div className="w-full h-full p-6 shadow-dark rounded-2xl bg-[#f7f7f7] flex flex-col">
@@ -122,10 +113,11 @@ const Diary = () => {
         <button
           onClick={handleSave}
           disabled={saved}
-          className={`absolute right-0 flex items-center gap-2 px-4 py-1 rounded-full text-sm font-semibold transition ${saved
+          className={`absolute right-0 flex items-center gap-2 px-4 py-1 rounded-full text-sm font-semibold transition ${
+            saved
               ? "bg-green-100 text-green-600"
               : "bg-primary text-white hover:bg-red-600"
-            }`}
+          }`}
         >
           {saved ? <FaCheck /> : <FaSave />}
           {saved ? "Saved" : "Save"}
@@ -142,8 +134,9 @@ const Diary = () => {
           {date.toDateString()}
         </span>
         <IoIosArrowForward
-          className={`text-xl hover:scale-110 ${isToday() ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"
-            }`}
+          className={`text-xl hover:scale-110 ${
+            isToday() ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"
+          }`}
           onClick={() => {
             if (!isToday()) handleNextDay();
           }}
@@ -156,7 +149,9 @@ const Diary = () => {
           <textarea
             autoFocus
             value={content}
-            placeholder={loading ? "Loading Content...." : "Start writing your thoughts..."}
+            placeholder={
+              loading ? "Loading Content...." : "Start writing your thoughts..."
+            }
             onChange={(e) => {
               setContent(e.target.value);
               setSaved(false);
@@ -172,7 +167,7 @@ const Diary = () => {
 
           <div className="w-full mt-4 text-right pr-2">
             <p className="text-sm font-semibold text-gray-400 italic">
-              — {user?.username || "Anonymous"} | {formatDate(date)}
+              — {session?.user?.username || "Anonymous"} | {formatDate(date)}
             </p>
           </div>
         </div>

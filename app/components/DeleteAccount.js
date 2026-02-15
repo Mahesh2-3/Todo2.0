@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation"; // ✅ Next.js navigation
-import { useAuth } from "../context/Authcontext"; // ✅ Your custom context
+import { signOut } from "next-auth/react";
 
-const DeleteAccount = ({setdeleteOpen}) => {
+const DeleteAccount = ({ setdeleteOpen }) => {
   const [confirmationText, setConfirmationText] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [deleted, setDeleted] = useState(false);
-  const { user, logout } = useAuth();
-  const router = useRouter(); // ✅ useRouter instead of useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,20 +27,13 @@ const DeleteAccount = ({setdeleteOpen}) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `/api/auth/delete-account`,
-        { password },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      const response = await axios.post(`/api/auth/delete-account`, {
+        password,
+      });
 
       if (response.data.success) {
         setDeleted(true);
-        logout();
-        router.prefetch("/signin"); // ✅ Next.js routing
+        signOut({ callbackUrl: ".signin" });
       } else {
         setErrorMsg(response.data.error || "Something went wrong.");
       }
@@ -59,8 +49,12 @@ const DeleteAccount = ({setdeleteOpen}) => {
     return (
       <div className="min-h-screen w-full absolute z-[9999] flex items-start justify-center px-4">
         <div className="bg-white p-10 rounded-xl shadow-md text-center max-w-sm w-full">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Account Deleted</h2>
-          <p className="text-gray-600">Your account has been successfully deleted.</p>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">
+            Account Deleted
+          </h2>
+          <p className="text-gray-600">
+            Your account has been successfully deleted.
+          </p>
         </div>
       </div>
     );
@@ -72,8 +66,8 @@ const DeleteAccount = ({setdeleteOpen}) => {
         onSubmit={handleSubmit}
         className="bg-white p-10 rounded-xl relative shadow-lg w-full max-w-md"
       >
-         <button
-          onClick={()=>setdeleteOpen(false)}
+        <button
+          onClick={() => setdeleteOpen(false)}
           className="absolute top-4 right-4 cursor-pointer text-xl"
         >
           ✕
@@ -96,7 +90,9 @@ const DeleteAccount = ({setdeleteOpen}) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Password
+          </label>
           <input
             type="password"
             value={password}
@@ -120,7 +116,7 @@ const DeleteAccount = ({setdeleteOpen}) => {
           {isLoading ? "Deleting..." : "Delete Account"}
         </button>
       </form>
-      </div>
+    </div>
   );
 };
 

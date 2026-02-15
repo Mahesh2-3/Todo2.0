@@ -1,9 +1,8 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
-import { useMediaQuery } from "react-responsive"
-import { useAuth } from "../context/Authcontext";
+import { useMediaQuery } from "react-responsive";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import {
@@ -18,6 +17,7 @@ import { useSearch } from "../context/SearchContext";
 import Image from "next/image";
 import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 const statusOptions = [
   {
@@ -40,19 +40,17 @@ const statusOptions = [
 const ScheduledTasks = () => {
   const { searchQuery } = useSearch();
   const [tasks, setTasks] = useState([]);
-  const { loading, setLoading } = useLoading()
-  const isMobile = useMediaQuery({ query: "(max-width:860px)" })
+  const { loading, setLoading } = useLoading();
+  const isMobile = useMediaQuery({ query: "(max-width:860px)" });
   const [tab, settab] = useState("Both");
-  const { user } = useAuth();
+  const { data: session } = useSession();
   const date = new Date();
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "long" });
   const totalTasks = tasks.length;
   const completed = tasks.filter((t) => t.status === "Completed").length;
   const inProgress = tasks.filter((t) => t.status === "In Progress").length;
-  const Pending = tasks.filter(
-    (t) => t.status === "Pending" || t.status === "Pending"
-  ).length;
+  const Pending = tasks.filter((t) => t.status === "Pending").length;
 
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
   const [open, setOpen] = useState(false);
@@ -60,107 +58,124 @@ const ScheduledTasks = () => {
   const [editTask, setEditTask] = useState(null);
 
   const fetchTasks = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await axios.get(`/api/auth/tasks`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+      const response = await axios.get(`/api/auth/tasks?type=scheduled`);
+      console.log("fetching");
+
+      const today = new Date().toISOString().split("T")[0];
+      console.log(response.data);
 
       const filteredTasks = response.data.tasks.filter((task) => {
-        return task.startDate != task.endDate;
+        if (task.isDaily) return false; // ignore daily templates
+
+        return (
+          task.startDate !== task.endDate &&
+          task.startDate <= today &&
+          task.endDate >= today
+        );
       });
 
       setTasks(filteredTasks);
     } catch (error) {
       console.error(
         "Failed to fetch tasks:",
-        error?.response?.data || error.message
+        error?.response?.data || error.message,
       );
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, [user.token]);
+    if (session?.user) {
+      console.log("fetching bhai");
+      fetchTasks();
+    }
+  }, []);
 
   useEffect(() => {
     if (!isMobile) {
-      settab("Both")
+      settab("Both");
     } else {
-      settab("Tasks")
+      settab("Tasks");
     }
-  }, [isMobile])
+  }, [isMobile]);
 
   const handleAddTask = async (newTask) => {
-    setLoading(true)
-    try {
-      // Only add if today is in range
-      if (newTask.startDate != newTask.endDate) {
-        const response = await axios.post(`/api/auth/tasks`, newTask, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+    setLoading(true);
 
-        setTasks((prev) => [response.data.task, ...prev]);
-      } else {
-        // Still send to backend, but don’t show in UI
-        await axios.post(`/api/auth/tasks`, newTask, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+    try {
+      const response = await axios.post(`/api/auth/tasks`, newTask);
+
+      const createdTask = response.data.task;
+
+      const today = new Date().toISOString().split("T")[0];
+
+      const isScheduled =
+        !createdTask.isDaily && // ignore daily templates
+        createdTask.startDate !== createdTask.endDate &&
+        createdTask.startDate <= today &&
+        createdTask.endDate >= today;
+
+      if (isScheduled) {
+        setTasks((prev) => [createdTask, ...prev]);
       }
     } catch (error) {
       const errMsg = error.response?.data?.error || "Failed to add task";
       console.error("Task creation failed:", errMsg);
     }
-    setLoading(false)
+
+    setLoading(false);
   };
 
   const handleUpdateTask = async (updatedTask) => {
-    setLoading(true)
+    setLoading(true);
+
+    // 🧠 Backup previous state
+    const previousTasks = tasks;
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const isScheduled =
+      !updatedTask.isDaily &&
+      updatedTask.startDate !== updatedTask.endDate &&
+      updatedTask.startDate <= today &&
+      updatedTask.endDate >= today;
+
+    // 🚀 1️⃣ Optimistically update UI
+    if (isScheduled) {
+      setTasks((prev) =>
+        prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)),
+      );
+    } else {
+      setTasks((prev) => prev.filter((t) => t._id !== updatedTask._id));
+    }
+
     try {
+      // 🔥 2️⃣ Send API request
       const response = await axios.put(
         `/api/auth/tasks/${updatedTask._id}`,
         updatedTask,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
       );
 
-      const newTask = response.data.task;
-
-      // Show in UI only if today is within date range
-      if (newTask.startDate != newTask.endDate) {
-        setTasks((prev) =>
-          prev.map((t) => (t._id === newTask._id ? newTask : t))
-        );
-      } else {
-        // Remove it from UI if date no longer valid
-        setTasks((prev) => prev.filter((t) => t._id !== newTask._id));
-      }
+      console.log("✅ Server confirmed update:", response.data.task);
     } catch (error) {
+      console.error("❌ Update failed. Rolling back...");
+
+      // 🔄 3️⃣ Rollback if failed
+      setTasks(previousTasks);
+
       const errMsg = error.response?.data?.error || "Failed to update task";
       console.error("Task update failed:", errMsg);
     }
-    setLoading(false)
 
+    setLoading(false);
   };
 
   const handleDeleteTask = async (taskId) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      await axios.delete(`/api/auth/tasks/${taskId}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+      await axios.delete(`/api/auth/tasks/${taskId}`);
 
       setTasks((prev) => prev.filter((task) => task._id !== taskId));
     } catch (error) {
@@ -168,8 +183,7 @@ const ScheduledTasks = () => {
       console.error("Task deletion failed:", errMsg);
       // Optional: show error toast
     }
-    setLoading(false)
-
+    setLoading(false);
   };
 
   return (
@@ -188,12 +202,23 @@ const ScheduledTasks = () => {
           />
         )}
         <div className="lgg:hidden flex w-full items-center justify-start gap-4">
-          <div onClick={() => {
-            settab("Tasks")
-          }} className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}>Tasks</div>
-          <div onClick={() => {
-            settab("Status")
-          }} className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`} >Status</div>
+          <div
+            onClick={() => {
+              settab("Tasks");
+            }}
+            className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
+          >
+            Tasks
+          </div>
+
+          <div
+            onClick={() => {
+              settab("Status");
+            }}
+            className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
+          >
+            Status
+          </div>
         </div>
         {(tab == "Both" || tab == "Tasks") && (
           <div className="lgg:w-1/2 w-full sm:h-full h-[93%] shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
@@ -223,22 +248,33 @@ const ScheduledTasks = () => {
 
               {tasks.length == 0 && (
                 <div className="w-full h-full">
-                  {loading ? (<span className="flex flex-col items-center justify-center gap-3 h-full"><AiOutlineLoading3Quarters className="animate-spin" size={30} /> Loading...</span>) : <span className="flex flex-col items-center justify-center gap-3 h-full"><FaRegClipboard size={30} /> No Tasks Found</span>}
-
+                  {loading ? (
+                    <span className="flex flex-col items-center justify-center gap-3 h-full">
+                      <AiOutlineLoading3Quarters
+                        className="animate-spin"
+                        size={30}
+                      />{" "}
+                      Loading...
+                    </span>
+                  ) : (
+                    <span className="flex flex-col items-center justify-center gap-3 h-full">
+                      <FaRegClipboard size={30} /> No Tasks Found
+                    </span>
+                  )}
                 </div>
               )}
               {tasks.filter((task) =>
-                task.title.toLowerCase().includes(searchQuery.toLowerCase())
+                task.title.toLowerCase().includes(searchQuery.toLowerCase()),
               ).length == 0 && (
-                  <div className="flex flex-col items-center justify-center gap-3 h-full">
-                    <FaRegClipboard size={30} /> No Tasks Found
-                  </div>
-                )}
+                <div className="flex flex-col items-center justify-center gap-3 h-full">
+                  <FaRegClipboard size={30} /> No Tasks Found
+                </div>
+              )}
 
               {/* Task Cards */}
               {tasks
                 .filter((task) =>
-                  task.title.toLowerCase().includes(searchQuery.toLowerCase())
+                  task.title.toLowerCase().includes(searchQuery.toLowerCase()),
                 )
                 .map((task, index) => (
                   <TaskCard
@@ -256,7 +292,7 @@ const ScheduledTasks = () => {
                     }}
                     onDelete={(taskToDelete) => {
                       const updatedTasks = tasks.filter(
-                        (t) => t !== taskToDelete
+                        (t) => t !== taskToDelete,
                       );
                       setTasks(updatedTasks);
                       handleDeleteTask(taskToDelete._id);
@@ -271,7 +307,8 @@ const ScheduledTasks = () => {
             {/* Status Summary */}
             <div className="sm:h-[40%] h-[30%] relative shadow-dark p-6 rounded-t-2xl flex flex-col">
               <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base text-[14px] mb-4 flex items-center gap-2">
-                <Image width={24} height={24} src="/Task_complete.png" alt="" /> Task Status
+                <Image width={24} height={24} src="/Task_complete.png" alt="" />{" "}
+                Task Status
               </h3>
               <div className="w-full h-full flex justify-center items-center">
                 <div className="flex justify-around w-full items-center  sm:pt-0 pt-5">
@@ -281,10 +318,11 @@ const ScheduledTasks = () => {
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (completed / totalTasks) * 100 : 0}
-                        text={`${totalTasks
-                          ? Math.round((completed / totalTasks) * 100)
-                          : 0
-                          }%`}
+                        text={`${
+                          totalTasks
+                            ? Math.round((completed / totalTasks) * 100)
+                            : 0
+                        }%`}
                         styles={buildStyles({
                           pathColor: "#22c55e",
                           trailColor: "#e5e7eb",
@@ -305,10 +343,11 @@ const ScheduledTasks = () => {
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (inProgress / totalTasks) * 100 : 0}
-                        text={`${totalTasks
-                          ? Math.round((inProgress / totalTasks) * 100)
-                          : 0
-                          }%`}
+                        text={`${
+                          totalTasks
+                            ? Math.round((inProgress / totalTasks) * 100)
+                            : 0
+                        }%`}
                         styles={buildStyles({
                           pathColor: "#F0B100",
                           trailColor: "#e5e7eb",
@@ -329,10 +368,11 @@ const ScheduledTasks = () => {
                       <CircularProgressbar
                         strokeWidth={10}
                         value={totalTasks ? (Pending / totalTasks) * 100 : 0}
-                        text={`${totalTasks
-                          ? Math.round((Pending / totalTasks) * 100)
-                          : 0
-                          }%`}
+                        text={`${
+                          totalTasks
+                            ? Math.round((Pending / totalTasks) * 100)
+                            : 0
+                        }%`}
                         styles={buildStyles({
                           pathColor: "#FF6767",
                           trailColor: "#e5e7eb",
@@ -366,8 +406,9 @@ const ScheduledTasks = () => {
                     </div>
                     {selectedStatus.status}
                     <svg
-                      className={`w-4 h-4 ml-2 transition-transform duration-200 ${open ? "rotate-180" : ""
-                        }`}
+                      className={`w-4 h-4 ml-2 transition-transform duration-200 ${
+                        open ? "rotate-180" : ""
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={2}
@@ -391,10 +432,11 @@ const ScheduledTasks = () => {
                             setSelectedStatus(status);
                             setOpen(false);
                           }}
-                          className={`px-4 py-2 flex items-center gap-6 hover:bg-gray-100 cursor-pointer ${selectedStatus.status === status.status
-                            ? "bg-gray-100"
-                            : ""
-                            }`}
+                          className={`px-4 py-2 flex items-center gap-6 hover:bg-gray-100 cursor-pointer ${
+                            selectedStatus.status === status.status
+                              ? "bg-gray-100"
+                              : ""
+                          }`}
                         >
                           <div
                             className={`w-[20px] h-[20px] rounded-full border-[2px] ${status.color} bg-white flex items-center justify-center shadow`}
@@ -410,14 +452,25 @@ const ScheduledTasks = () => {
               </div>
               {(() => {
                 const filteredTasks = tasks.filter(
-                  (task) => task.status === selectedStatus.status
+                  (task) => task.status === selectedStatus.status,
                 );
 
                 if (filteredTasks.length === 0) {
                   return (
                     <div className="h-full w-full">
-                      {loading ? (<span className="flex flex-col items-center justify-center gap-3 h-full"><AiOutlineLoading3Quarters className="animate-spin" size={30} /> Loading...</span>) : <span className="flex flex-col items-center justify-center gap-3 h-full"><FaRegClipboard size={30} /> No Tasks Found</span>}
-
+                      {loading ? (
+                        <span className="flex flex-col items-center justify-center gap-3 h-full">
+                          <AiOutlineLoading3Quarters
+                            className="animate-spin"
+                            size={30}
+                          />{" "}
+                          Loading...
+                        </span>
+                      ) : (
+                        <span className="flex flex-col items-center justify-center gap-3 h-full">
+                          <FaRegClipboard size={30} /> No Tasks Found
+                        </span>
+                      )}
                     </div>
                   );
                 }
@@ -430,7 +483,7 @@ const ScheduledTasks = () => {
                       const updatedTask = { ...task, status: newStatus };
                       handleUpdateTask(updatedTask); // 🔁 Update in backend
                       setTasks((prev) =>
-                        prev.map((t) => (t._id === task._id ? updatedTask : t))
+                        prev.map((t) => (t._id === task._id ? updatedTask : t)),
                       );
                     }}
                     onEdit={() => {
@@ -440,7 +493,7 @@ const ScheduledTasks = () => {
                     onDelete={(taskToDelete) => {
                       handleDeleteTask(taskToDelete._id); // 🗑 Delete in backend
                       setTasks((prev) =>
-                        prev.filter((t) => t._id !== taskToDelete._id)
+                        prev.filter((t) => t._id !== taskToDelete._id),
                       );
                     }}
                   />

@@ -1,12 +1,16 @@
-import { connectDB } from "../../../lib/db";
-import Diary from "../../../models/Diary";
-import { verifyToken } from "../../../lib/VerifyToken";
-
+import { connectDB } from "@/app/lib/mongoose";
+import Diary from "@/app/models/Diary";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../[...nextauth]/route";
 
 export async function GET(req) {
   try {
     await connectDB();
-    const userId = await verifyToken(req);
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session?.user.id;
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date");
 
@@ -20,7 +24,11 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await connectDB();
-    const userId = await verifyToken(req);
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session?.user.id;
     const { date, content } = await req.json();
 
     let diary = await Diary.findOne({ userId, date });
