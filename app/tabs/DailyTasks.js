@@ -5,6 +5,7 @@ import axios from "axios";
 import { useMediaQuery } from "react-responsive";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import StatusChart from "../components/StatusChart";
 import {
   FaCheck,
   FaHourglassHalf,
@@ -58,7 +59,6 @@ const DailyTasks = () => {
 
     try {
       const res = await axios.get(`/api/auth/tasks?type=daily`);
-      console.log(res.data);
 
       // Backend already gives today's daily instances
       setTasks(res.data);
@@ -90,7 +90,6 @@ const DailyTasks = () => {
       const response = await axios.post(`/api/auth/tasks`, {
         ...newTask,
       });
-      console.log(response);
       // Backend generates today's instance automatically
       fetchTasks();
     } catch (err) {
@@ -138,30 +137,7 @@ const DailyTasks = () => {
     setLoading(false);
   };
 
-  const renderStatusChart = (label, value, color) => (
-    <div className="flex flex-col items-center gap-2">
-      <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
-        <CircularProgressbar
-          strokeWidth={10}
-          value={value || 0}
-          text={`${Math.round(value) || 0}%`}
-          styles={buildStyles({
-            pathColor: color,
-            trailColor: "#e5e7eb",
-            textColor: "#000",
-            textSize: "22px",
-          })}
-        />
-      </div>
-      <div className="flex items-center gap-1 text-sm">
-        <span
-          className={`w-2 h-2 rounded-full inline-block`}
-          style={{ backgroundColor: color }}
-        ></span>
-        {label}
-      </div>
-    </div>
-  );
+  /* renderStatusChart removed */
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -197,6 +173,9 @@ const DailyTasks = () => {
             onClick={() => {
               settab("Tasks");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Tasks Tab"
             className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Tasks
@@ -205,6 +184,9 @@ const DailyTasks = () => {
             onClick={() => {
               settab("Status");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Status Tab"
             className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Status
@@ -215,6 +197,9 @@ const DailyTasks = () => {
             <div
               className="absolute lg7:bottom-10 bottom-20 right-3 w-[50px] h-[50px] flex items-center justify-center bg-primary rounded-full cursor-pointer z-10"
               onClick={() => setShowNewTask(true)}
+              role="button"
+              aria-label="Create new task"
+              tabIndex={0}
             >
               <FaPlus size={20} color="white" />
             </div>
@@ -282,26 +267,26 @@ const DailyTasks = () => {
         {(tab == "Both" || tab == "Status") && (
           <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] overflow-y-scroll hide-scrollbar flex flex-col gap-4">
             <div className="sm:h-[40%] h-[30%] w-full relative border border-brick shadow-md sm:p-6 p-3 rounded-2xl">
-              <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base text-[14px] mb-4 flex items-center gap-2">
+              <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base @min-xs:text-[14px] text-[12px] mb-4 flex items-center gap-2">
                 <Image width={24} height={24} src="/Task_complete.png" alt="" />{" "}
                 Task Status
               </h3>
               <div className="flex justify-around items-center h-full pt-7">
-                {renderStatusChart(
-                  "Completed",
-                  (statusCount("Completed") / totalTasks) * 100,
-                  "#22c55e",
-                )}
-                {renderStatusChart(
-                  "In Progress",
-                  (statusCount("In Progress") / totalTasks) * 100,
-                  "#F0B100",
-                )}
-                {renderStatusChart(
-                  "Pending",
-                  (statusCount("Pending") / totalTasks) * 100,
-                  "#FF6767",
-                )}
+                <StatusChart
+                  label="Completed"
+                  value={(statusCount("Completed") / totalTasks) * 100}
+                  color="#22c55e"
+                />
+                <StatusChart
+                  label="In Progress"
+                  value={(statusCount("In Progress") / totalTasks) * 100}
+                  color="#F0B100"
+                />
+                <StatusChart
+                  label="Pending"
+                  value={(statusCount("Pending") / totalTasks) * 100}
+                  color="#FF6767"
+                />
               </div>
             </div>
 

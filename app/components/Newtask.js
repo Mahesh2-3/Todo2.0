@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 
 const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
@@ -9,7 +9,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(
-    callingFrom == "ScheduledTasks" ? tomorrow : today
+    callingFrom == "ScheduledTasks" ? tomorrow : today,
   );
   const [isDaily, setIsDaily] = useState(false); // default checked
 
@@ -58,6 +58,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
       <div className="bg-white rounded-xl p-6 sm:w-[440px] w-[400px] shadow-lg relative">
         <button
           onClick={onClose}
+          aria-label="Close"
           className="absolute top-4 right-4 cursor-pointer text-xl"
         >
           ✕
@@ -75,6 +76,9 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
             </span>
             <div
               onClick={handleToggle}
+              role="button"
+              tabIndex={0}
+              aria-label="Toggle daily task"
               className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
                 isDaily ? "bg-primary" : "bg-gray-300"
               }`}
@@ -148,4 +152,3 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
 };
 
 export default NewTask;
-

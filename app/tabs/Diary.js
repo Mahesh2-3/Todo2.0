@@ -54,17 +54,6 @@ const Diary = () => {
       setContent(response.data?.content || "");
       setSaved(true);
     } catch (error) {
-      console.log("❌ Failed to fetch diary");
-
-      if (error.response) {
-        console.log("Status:", error.response.status);
-        console.log("Data:", error.response.data);
-      } else if (error.request) {
-        console.log("No response from server:", error.request);
-      } else {
-        console.log("Request setup error:", error.message);
-      }
-
       setContent("");
     } finally {
       setLoading(false);
@@ -126,21 +115,30 @@ const Diary = () => {
 
       {/* Date Navigation */}
       <div className="w-full flex justify-between items-center pb-6">
-        <IoIosArrowBack
-          className="text-xl hover:scale-110 cursor-pointer"
+        <button
           onClick={handlePrevDay}
-        />
+          aria-label="Previous Day"
+          className="contents"
+        >
+          <IoIosArrowBack className="text-xl hover:scale-110 cursor-pointer" />
+        </button>
         <span className="text-sm font-medium select-none">
           {date.toDateString()}
         </span>
-        <IoIosArrowForward
-          className={`text-xl hover:scale-110 ${
-            isToday() ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"
-          }`}
+        <button
           onClick={() => {
             if (!isToday()) handleNextDay();
           }}
-        />
+          aria-label="Next Day"
+          className="contents"
+          disabled={isToday()}
+        >
+          <IoIosArrowForward
+            className={`text-xl hover:scale-110 ${
+              isToday() ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"
+            }`}
+          />
+        </button>
       </div>
 
       {/* Diary Input Area */}

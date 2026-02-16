@@ -1,15 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
-import { signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 const DeleteAccount = ({ setdeleteOpen }) => {
   const [confirmationText, setConfirmationText] = useState("");
-  const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [deleted, setDeleted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,45 +16,12 @@ const DeleteAccount = ({ setdeleteOpen }) => {
       return;
     }
 
-    if (!password) {
-      setErrorMsg("Password is required.");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await axios.post(`/api/auth/delete-account`, {
-        password,
-      });
-
-      if (response.data.success) {
-        setDeleted(true);
-        signOut({ callbackUrl: ".signin" });
-      } else {
-        setErrorMsg(response.data.error || "Something went wrong.");
-      }
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Server error. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    // 🚨 Force Google re-authentication
+    await signIn("google", {
+      callbackUrl: "/delete-account",
+      prompt: "login", // forces account selection again
+    });
   };
-
-  if (deleted) {
-    return (
-      <div className="min-h-screen w-full absolute z-[9999] flex items-start justify-center px-4">
-        <div className="bg-white p-10 rounded-xl shadow-md text-center max-w-sm w-full">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">
-            Account Deleted
-          </h2>
-          <p className="text-gray-600">
-            Your account has been successfully deleted.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full h-full bg-black/10 z-[9999] fixed inset-0 backdrop-blur-sm flex justify-center items-center">
@@ -89,31 +52,15 @@ const DeleteAccount = ({ setdeleteOpen }) => {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
-            placeholder="Enter your password"
-          />
-        </div>
-
         {errorMsg && (
           <p className="text-red-600 text-sm mb-4 text-center">{errorMsg}</p>
         )}
 
         <button
           type="submit"
-          disabled={isLoading}
-          className={`w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition duration-200 ${
-            isLoading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
+          className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition duration-200"
         >
-          {isLoading ? "Deleting..." : "Delete Account"}
+          Delete Account
         </button>
       </form>
     </div>

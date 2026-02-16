@@ -26,7 +26,7 @@ export const authOptions = {
       if (!session?.user) return session;
 
       const client = await clientPromise;
-      const db = client.db("todoDB");
+      const db = client.db(process.env.DB_NAME);
 
       const dbUser = await db.collection("Users").findOne({
         email: session.user.email,
@@ -48,7 +48,7 @@ export const authOptions = {
     async createUser({ user }) {
       try {
         const client = await clientPromise;
-        const db = client.db("todoDB");
+        const db = client.db(process.env.DB_NAME);
 
         // Convert "Karna Mahesh" -> "karna_mahesh"
         const usernameSlug = user.name?.toLowerCase().replace(/\s+/g, "_");
@@ -65,7 +65,7 @@ export const authOptions = {
           },
         );
 
-        console.log("✅ Custom fields added to new user");
+        // console.log("✅ Custom fields added to new user");
       } catch (error) {
         console.error("❌ Error updating user fields:", error);
       }

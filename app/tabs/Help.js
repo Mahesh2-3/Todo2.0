@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
 import { useLoading } from "../context/LoadingContext";
 
@@ -53,7 +53,7 @@ const Help = () => {
           subject: selectedOption === "report" ? "Report" : "Feedback",
           message: data.message + (rating ? "\nRating: " + rating + "/5" : ""),
         },
-        process.env.NEXT_PUBLIC_EMAIL_PUBLICKEY
+        process.env.NEXT_PUBLIC_EMAIL_PUBLICKEY,
       );
 
       await emailjs.send(
@@ -70,13 +70,15 @@ const Help = () => {
             selectedOption === "report"
               ? "Thank you for reporting a problem. We've received your message and will look into it as soon as possible."
               : "We really appreciate you taking the time to share your feedback with us! ❤️",
-          subject_matter: data.message + (rating ? "\nRating: " + rating + "/5" : ""),
+          subject_matter:
+            data.message + (rating ? "\nRating: " + rating + "/5" : ""),
           message2:
             selectedOption === "report"
-              ? "If we need more details, we'll contact you at this email: " + data.userEmail
+              ? "If we need more details, we'll contact you at this email: " +
+                data.userEmail
               : "Feedback like yours helps us improve and build better experiences for everyone.",
         },
-        process.env.NEXT_PUBLIC_EMAIL_PUBLICKEY
+        process.env.NEXT_PUBLIC_EMAIL_PUBLICKEY,
       );
 
       setIsSubmitted(true);
@@ -95,7 +97,7 @@ const Help = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="text-green-500 text-5xl sm:text-6xl mb-4">✓</div>
+          <div className="text-green-600 text-5xl sm:text-6xl mb-4">✓</div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2">
             {selectedOption === "report" ? "Report Submitted" : "Thank You!"}
           </h2>
@@ -150,10 +152,16 @@ const Help = () => {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-sm sm:text-base">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6 text-sm sm:text-base"
+      >
         {/* User Name */}
         <div>
-          <label htmlFor="userName" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="userName"
+            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1"
+          >
             Your Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -165,13 +173,18 @@ const Help = () => {
             }`}
           />
           {errors.userName && (
-            <p className="mt-1 text-xs text-red-500">{errors.userName.message}</p>
+            <p className="mt-1 text-xs text-red-500">
+              {errors.userName.message}
+            </p>
           )}
         </div>
 
         {/* User Email */}
         <div>
-          <label htmlFor="userEmail" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="userEmail"
+            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1"
+          >
             Your Email <span className="text-red-500">*</span>
           </label>
           <input
@@ -190,14 +203,21 @@ const Help = () => {
             }`}
           />
           {errors.userEmail && (
-            <p className="mt-1 text-xs text-red-500">{errors.userEmail.message}</p>
+            <p className="mt-1 text-xs text-red-500">
+              {errors.userEmail.message}
+            </p>
           )}
         </div>
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-            {selectedOption === "report" ? "Describe the issue" : "Your feedback"}{" "}
+          <label
+            htmlFor="message"
+            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1"
+          >
+            {selectedOption === "report"
+              ? "Describe the issue"
+              : "Your feedback"}{" "}
             <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -220,7 +240,9 @@ const Help = () => {
             }`}
           />
           {errors.message && (
-            <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>
+            <p className="mt-1 text-xs text-red-500">
+              {errors.message.message}
+            </p>
           )}
         </div>
 
@@ -257,7 +279,9 @@ const Help = () => {
             type="submit"
             disabled={isSending}
             className={`bg-primary text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg text-sm sm:text-base ${
-              isSending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-dark"
+              isSending
+                ? "opacity-70 cursor-not-allowed"
+                : "hover:bg-primary-dark"
             }`}
           >
             {isSending ? (

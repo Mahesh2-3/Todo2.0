@@ -7,7 +7,7 @@ let client;
 let clientPromise;
 
 if (!process.env.MONGO_URI) {
-  throw new Error("Please add MONGODB_URI to .env.local");
+  throw new Error("Please add MONGO_URI to .env.local");
 }
 
 if (process.env.NODE_ENV === "development") {

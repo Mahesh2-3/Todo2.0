@@ -31,21 +31,15 @@ const SignIn = () => {
   if (status === "loading") return <TopLoader />;
 
   return (
-    <div className="w-[100vw] h-screen flex justify-center items-center bg-white">
+    <div className="w-[100vw] h-screen flex flex-col justify-center items-center bg-white">
       <TopLoader />
-
-      <div className="flex h-[600px] w-[90%] max-w-[600px] relative rounded-2xl shadow-2xl overflow-hidden">
-        <Image
-          width={600}
-          height={600}
-          priority
-          src="/signin.png"
-          alt="signin background"
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
-        />
-
-        <div className="relative z-10 w-full px-10 flex flex-col justify-center backdrop-blur-md bg-white/20 text-black">
-          <h2 className="text-3xl font-bold mb-8 text-center">Welcome Back</h2>
+      <div className="text-5xl font-bold">Todo 2.0</div>
+      {/* <div className="flex h-[600px] w-[90%] max-w-[600px] relative rounded-2xl overflow-hidden"> */}
+      <div className="flex items-center justify-center flex-row h-[50vh]">
+        <div className="relative z-10 w-full px-10 flex flex-col justify-center bg-white/20 text-black">
+          <h2 className="text-3xl font-bold mb-8 text-center">
+            Sign In With Google
+          </h2>
 
           <button
             onClick={handleGoogleLogin}
@@ -59,6 +53,15 @@ const SignIn = () => {
             Secure login powered by Google
           </p>
         </div>
+        <Image
+          width={600}
+          height={600}
+          priority
+          src="/signin.png"
+          alt="signin background"
+          className="max-md:absolute max-md:blur-md w-[500px] h-[500px] object-cover opacity-60"
+        />
+        {/* </div> */}
       </div>
     </div>
   );

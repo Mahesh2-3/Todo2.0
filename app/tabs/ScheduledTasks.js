@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import StatusChart from "../components/StatusChart";
 import {
   FaCheck,
   FaHourglassHalf,
@@ -61,12 +60,10 @@ const ScheduledTasks = () => {
     setLoading(true);
     try {
       const response = await axios.get(`/api/auth/tasks?type=scheduled`);
-      console.log("fetching");
 
       const today = new Date().toISOString().split("T")[0];
-      console.log(response.data);
 
-      const filteredTasks = response.data.tasks.filter((task) => {
+      const filteredTasks = response.data?.filter((task) => {
         if (task.isDaily) return false; // ignore daily templates
 
         return (
@@ -88,7 +85,6 @@ const ScheduledTasks = () => {
 
   useEffect(() => {
     if (session?.user) {
-      console.log("fetching bhai");
       fetchTasks();
     }
   }, []);
@@ -157,8 +153,6 @@ const ScheduledTasks = () => {
         `/api/auth/tasks/${updatedTask._id}`,
         updatedTask,
       );
-
-      console.log("✅ Server confirmed update:", response.data.task);
     } catch (error) {
       console.error("❌ Update failed. Rolling back...");
 
@@ -206,6 +200,9 @@ const ScheduledTasks = () => {
             onClick={() => {
               settab("Tasks");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Tasks Tab"
             className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Tasks
@@ -215,6 +212,9 @@ const ScheduledTasks = () => {
             onClick={() => {
               settab("Status");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Status Tab"
             className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Status
@@ -226,6 +226,9 @@ const ScheduledTasks = () => {
             <div
               className="absolute w-[50px] z-[10] cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary sm:bottom-10 bottom-20 right-3"
               onClick={() => setShowNewTask(true)}
+              role="button"
+              tabIndex={0}
+              aria-label="Add Task"
             >
               <FaPlus size={20} color="white" />
             </div>
@@ -313,79 +316,25 @@ const ScheduledTasks = () => {
               <div className="w-full h-full flex justify-center items-center">
                 <div className="flex justify-around w-full items-center  sm:pt-0 pt-5">
                   {/* Completed */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
-                      <CircularProgressbar
-                        strokeWidth={10}
-                        value={totalTasks ? (completed / totalTasks) * 100 : 0}
-                        text={`${
-                          totalTasks
-                            ? Math.round((completed / totalTasks) * 100)
-                            : 0
-                        }%`}
-                        styles={buildStyles({
-                          pathColor: "#22c55e",
-                          trailColor: "#e5e7eb",
-                          textColor: "#000",
-                          textSize: "24px",
-                        })}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-                      Completed
-                    </div>
-                  </div>
+                  <StatusChart
+                    label="Completed"
+                    value={totalTasks ? (completed / totalTasks) * 100 : 0}
+                    color="#22c55e"
+                  />
 
                   {/* In Progress */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
-                      <CircularProgressbar
-                        strokeWidth={10}
-                        value={totalTasks ? (inProgress / totalTasks) * 100 : 0}
-                        text={`${
-                          totalTasks
-                            ? Math.round((inProgress / totalTasks) * 100)
-                            : 0
-                        }%`}
-                        styles={buildStyles({
-                          pathColor: "#F0B100",
-                          trailColor: "#e5e7eb",
-                          textColor: "#000",
-                          textSize: "24px",
-                        })}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
-                      In Progress
-                    </div>
-                  </div>
+                  <StatusChart
+                    label="In Progress"
+                    value={totalTasks ? (inProgress / totalTasks) * 100 : 0}
+                    color="#F0B100"
+                  />
 
                   {/* Pending */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]">
-                      <CircularProgressbar
-                        strokeWidth={10}
-                        value={totalTasks ? (Pending / totalTasks) * 100 : 0}
-                        text={`${
-                          totalTasks
-                            ? Math.round((Pending / totalTasks) * 100)
-                            : 0
-                        }%`}
-                        styles={buildStyles({
-                          pathColor: "#FF6767",
-                          trailColor: "#e5e7eb",
-                          textColor: "#000",
-                          textSize: "24px",
-                        })}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <span className="w-2 h-2 rounded-full bg-primary inline-block"></span>
-                      Pending
-                    </div>
-                  </div>
+                  <StatusChart
+                    label="Pending"
+                    value={totalTasks ? (Pending / totalTasks) * 100 : 0}
+                    color="#FF6767"
+                  />
                 </div>
               </div>
             </div>
@@ -398,6 +347,9 @@ const ScheduledTasks = () => {
                   <div
                     className="bg-white text-sm text-gray-700 px-4 py-2 rounded-md cursor-pointer select-none flex justify-between items-center"
                     onClick={() => setOpen((prev) => !prev)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Filter by Status"
                   >
                     <div
                       className={`w-[20px] h-[20px] rounded-full border-[2px] ${selectedStatus.color} bg-white flex items-center justify-center shadow`}

@@ -11,22 +11,36 @@ import { PiAddressBookFill } from "react-icons/pi";
 import { SlCalender } from "react-icons/sl";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import AccountInfo from "../tabs/AccountInfo";
-import DailyTasks from "../tabs/DailyTasks";
-import Diary from "../tabs/Diary";
-import ScheduledTasks from "../tabs/ScheduledTasks";
-import Dashboard from "../tabs/Dashboard";
-import Help from "../tabs/Help";
 import { RiMenuFill, RiCloseFill } from "react-icons/ri";
 import DeleteAccount from "./DeleteAccount";
 import Image from "next/image";
 import { useActiveTab } from "../context/ActiveTab";
+import dynamic from "next/dynamic";
+
+const AccountInfo = dynamic(() => import("../tabs/AccountInfo"), {
+  loading: () => <p>Loading...</p>,
+});
+const DailyTasks = dynamic(() => import("../tabs/DailyTasks"), {
+  loading: () => <p>Loading...</p>,
+});
+const Diary = dynamic(() => import("../tabs/Diary"), {
+  loading: () => <p>Loading...</p>,
+});
+const ScheduledTasks = dynamic(() => import("../tabs/ScheduledTasks"), {
+  loading: () => <p>Loading...</p>,
+});
+const Dashboard = dynamic(() => import("../tabs/Dashboard"), {
+  loading: () => <p>Loading...</p>,
+});
+const Help = dynamic(() => import("../tabs/Help"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const Body = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const { setActiveTab } = useActiveTab();
-  const [activeTab, setactiveTab] = useState("Dashboard");
+  const [activeTab, setactiveTab] = useState("Daily Task");
   const [Menutab, setMenutab] = useState(false);
   const [deleteClicked, setdeleteClicked] = useState(false);
 
@@ -140,6 +154,7 @@ const Body = () => {
         <div className="absolute right-0 -top-8 xl:hidden z-[19]">
           <button
             onClick={toggleMenu}
+            aria-label="Toggle menu"
             className="bg-primary cursor-pointer text-white py-2 px-3 rounded-l-2xl"
           >
             {Menutab ? <RiCloseFill size={27} /> : <RiMenuFill size={27} />}

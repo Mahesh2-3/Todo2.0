@@ -5,10 +5,9 @@ import TaskCard from "../components/TaskCard";
 import NewTask from "../components/Newtask";
 import { useMediaQuery } from "react-responsive";
 import DatePicker from "react-datepicker";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { FaChevronDown, FaRegClipboard } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-circular-progressbar/dist/styles.css";
+import StatusChart from "../components/StatusChart";
 import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useSession } from "next-auth/react";
@@ -144,24 +143,7 @@ const Dashboard = () => {
   };
 
   // ─── UI helpers ──────────────────────────────────────────
-  const SummaryBox = ({ label, value, color }) => (
-    <div className="flex flex-col items-center">
-      <CircularProgressbar
-        className="sm:w-[100px] w-[80px] sm:h-[100px] h-[80px]"
-        strokeWidth={10}
-        value={counts.total ? (value / counts.total) * 100 : 0}
-        text={`${counts.total ? Math.round((value / counts.total) * 100) : 0}%`}
-        styles={buildStyles({
-          pathColor: color,
-          trailColor: "#e5e7eb",
-          textColor: "#000",
-          textSize: "22px",
-          pathTransitionDuration: 0.7,
-        })}
-      />
-      <span>{label}</span>
-    </div>
-  );
+  /* SummaryBox removed */
 
   // ─── Render ──────────────────────────────────────────────
   return (
@@ -186,6 +168,9 @@ const Dashboard = () => {
             onClick={() => {
               settab("Tasks");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Tasks Tab"
             className={`py-2 px-6 cursor-pointer  font-bold w-[50%] text-center  border-b-2 ${tab == "Tasks" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Tasks
@@ -194,6 +179,9 @@ const Dashboard = () => {
             onClick={() => {
               settab("Status");
             }}
+            role="button"
+            tabIndex={0}
+            aria-label="Status Tab"
             className={`py-2 px-6  cursor-pointer font-bold w-[50%] text-center  border-b-2 ${tab == "Status" ? "border-b-primary text-primary" : "border-b-gray-300 text-gray-300"}`}
           >
             Status
@@ -208,19 +196,25 @@ const Dashboard = () => {
                 Task Summary
               </h3>
               <div className="flex justify-around items-center h-full sm:pt-0 pt-10">
-                <SummaryBox
+                <StatusChart
                   label="Completed"
-                  value={counts.completed}
+                  value={
+                    counts.total ? (counts.completed / counts.total) * 100 : 0
+                  }
                   color="#22c55e"
                 />
-                <SummaryBox
-                  label="In Progress"
-                  value={counts.progress}
+                <StatusChart
+                  label="In Progress"
+                  value={
+                    counts.total ? (counts.progress / counts.total) * 100 : 0
+                  }
                   color="#F0B100"
                 />
-                <SummaryBox
+                <StatusChart
                   label="Pending"
-                  value={counts.pending}
+                  value={
+                    counts.total ? (counts.pending / counts.total) * 100 : 0
+                  }
                   color="#FF6767"
                 />
               </div>
@@ -371,6 +365,9 @@ const Dropdown = ({ label, open, setOpen, children }) => (
   <div className="relative sm:w-40 w-26">
     <div
       onClick={() => setOpen((o) => !o)}
+      role="button"
+      tabIndex={0}
+      aria-label="Dropdown"
       className="flex items-center justify-between px-4 py-2 border sm:text-base text-sm rounded cursor-pointer bg-white"
     >
       <span>{label}</span>

@@ -161,9 +161,9 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
             <span
               className={
                 task.status === "Completed"
-                  ? "text-green-500"
+                  ? "text-green-600"
                   : task.status === "In Progress"
-                    ? "text-yellow-500"
+                    ? "text-yellow-600"
                     : "text-primary"
               }
             >
@@ -182,7 +182,7 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
         {showOptionsMenu && (
           <div className="absolute right-0 top-6 bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
             <div
-              className="flex items-center gap-2 cursor-pointer hover:text-blue-500"
+              className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
               onClick={() => {
                 onEdit?.(task);
                 setShowOptionsMenu(false);

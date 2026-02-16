@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Todo 2.0 - Personal Productivity & Diary App
 
-## Getting Started
+Todo 2.0 is a modern, full-stack task management application built with **Next.js 15** and **MongoDB**. It helps you organize your daily life, plan future tasks, and maintain a personal diary, all within a clean and responsive interface.
 
-First, run the development server:
+## 🚀 Features
+
+### 📊 Dashboard
+
+- **Visual Insights**: Track your productivity with circular progress charts for Completed, In Progress, and Pending tasks.
+- **Quick Summary**: Get an instant overview of your task status.
+- **Expiring Tasks**: Stay ahead with a dedicated view for tasks expiring soon.
+
+### ✅ Task Management
+
+- **Daily Tasks**: Focus on what needs to be done today.
+- **Scheduled Tasks**: Plan for the future with date-specific tasks.
+- **Status Tracking**: Easily update task status (Pending → In Progress → Completed).
+- **Search & Filter**: Find any task instantly by keyword, date, or status.
+
+### 📔 Personal Diary
+
+- **Daily Journaling**: Write and save your thoughts daily.
+- **Streak Protection**: Get notified if you miss a diary entry for the previous day.
+
+### 🔔 Smart Notifications
+
+- **Task Alerts**: Receive alerts for expired or overdue tasks.
+- **Diary Reminders**: Gentle nudges to keep your journaling habit alive.
+
+### 📱 Responsive Design
+
+- Fully optimized for both desktop and mobile devices.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: JavaScript / React 19
+- **Database**: [MongoDB](https://www.mongodb.com/) (via Mongoose)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **UI Components**: `react-circular-progressbar`, `react-datepicker`, `react-icons`, `react-toastify`
+
+---
+
+## 📦 Getting Started
+
+Follow these steps to run the project locally:
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/todo2.0.git
+cd todo2.0
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Environment Setup
+
+Create a `.env` file in the root directory and add the following variables:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📂 Project Structure
 
-## Learn More
+- `app/` - Main application code (App Router).
+  - `components/` - Reusable UI components (Navbar, TaskCard, StatusChart, etc.).
+  - `models/` - Mongoose schemas (User, Task, Diary).
+  - `tabs/` - Main views (Dashboard, DailyTasks, ScheduledTasks).
+  - `api/` - Backend API routes.
+- `public/` - Static assets.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤝 Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Please feel free to submit a Pull Request.
