@@ -4,11 +4,15 @@ Todo 2.0 is a modern, full-stack task management application built with **Next.j
 
 ## 🚀 Features
 
-### 📊 Dashboard
+### 📊 Dashboard & Overview
 
-- **Visual Insights**: Track your productivity with circular progress charts for Completed, In Progress, and Pending tasks.
-- **Quick Summary**: Get an instant overview of your task status.
-- **Expiring Tasks**: Stay ahead with a dedicated view for tasks expiring soon.
+- **Overview Tab**:
+  - **Quick Summary**: Circular progress charts for Completed, In Progress, and Pending tasks.
+  - **Expiring Tasks**: Stay ahead with a dedicated view for tasks expiring soon.
+  - **Task Filtering**: Filter tasks by date (Today, Yesterday, Calendar) and Status.
+- **Dashboard Tab**:
+  - **Weekly Trend**: Visualize your weekly completion rate with a smooth Area Chart.
+  - **Activity Heatmap**: View your task completion activity over the last year, similar to GitHub contributions.
 
 ### ✅ Task Management
 
@@ -16,6 +20,7 @@ Todo 2.0 is a modern, full-stack task management application built with **Next.j
 - **Scheduled Tasks**: Plan for the future with date-specific tasks.
 - **Status Tracking**: Easily update task status (Pending → In Progress → Completed).
 - **Search & Filter**: Find any task instantly by keyword, date, or status.
+- **Templates**: Create reusable task templates for recurring activities.
 
 ### 📔 Personal Diary
 
@@ -40,7 +45,8 @@ Todo 2.0 is a modern, full-stack task management application built with **Next.j
 - **Database**: [MongoDB](https://www.mongodb.com/) (via Mongoose)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **UI Components**: `react-circular-progressbar`, `react-datepicker`, `react-icons`, `react-toastify`
+- **Data Visualization**: `recharts`, `react-calendar-heatmap`, `react-circular-progressbar`
+- **UI Components**: `react-datepicker`, `react-icons`, `react-toastify`, `react-responsive`
 
 ---
 
