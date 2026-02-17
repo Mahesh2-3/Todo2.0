@@ -30,6 +30,9 @@ export const metadata = {
     icon: "/Logo.png",
     shortcut: "/Logo.png",
   },
+  verification: {
+    google: "MV_yKUL8AUGYW500wF3fQ_k0cyS2Xhd4G7AYuHwFAwM",
+  },
 };
 
 export default function RootLayout({ children }) {
