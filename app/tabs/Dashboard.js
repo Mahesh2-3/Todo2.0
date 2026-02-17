@@ -166,6 +166,11 @@ const Dashboard = () => {
         .react-calendar-heatmap .color-github-4 {
           fill: #e60000;
         }
+        /* Remove focus outline from Recharts */
+        .recharts-wrapper:focus,
+        .recharts-surface:focus {
+          outline: none;
+        }
       `}</style>
     </div>
   );
