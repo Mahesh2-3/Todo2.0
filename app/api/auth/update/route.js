@@ -1,6 +1,6 @@
 import { connectDB } from "@/app/lib/mongoose";
 import User from "@/app/models/User";
-import { authOptions } from "../[...nextauth]/route";
+import { authOptions } from "@/app/lib/auth";
 import { getServerSession } from "next-auth";
 
 export async function PUT(req) {

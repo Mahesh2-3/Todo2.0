@@ -1,7 +1,7 @@
 import { connectDB } from "@/app/lib/mongoose";
 import Diary from "@/app/models/Diary";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../[...nextauth]/route";
+import { authOptions } from "@/app/lib/auth";
 
 export async function GET(req) {
   try {
