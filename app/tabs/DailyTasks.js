@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
@@ -54,7 +54,7 @@ const DailyTasks = () => {
   const statusCount = (status) =>
     tasks?.filter((t) => t.status === status).length;
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -67,13 +67,13 @@ const DailyTasks = () => {
     }
 
     setLoading(false);
-  };
+  }, [setLoading]);
 
   useEffect(() => {
     if (session?.user) {
       fetchTasks();
     }
-  }, []);
+  }, [session, fetchTasks]);
 
   useEffect(() => {
     if (!isMobile) {

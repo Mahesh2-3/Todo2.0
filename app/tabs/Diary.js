@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen, FaSave, FaCheck } from "react-icons/fa";
 import { useLoading } from "../context/LoadingContext";
@@ -13,7 +13,7 @@ const Diary = () => {
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(true);
 
-  const formatDate = (d) => d.toLocaleDateString("en-CA");
+  const formatDate = useCallback((d) => d.toLocaleDateString("en-CA"), []);
 
   const handlePrevDay = () => {
     const prev = new Date(date);
@@ -34,30 +34,6 @@ const Diary = () => {
       date.getMonth() === today.getMonth() &&
       date.getDate() === today.getDate()
     );
-  };
-
-  const fetchDiary = async () => {
-    setLoading(true);
-    if (!session?.user.id) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.get("/api/auth/diary", {
-        params: {
-          date: formatDate(date),
-          userId: session?.user.id,
-        },
-      });
-
-      setContent(response.data?.content || "");
-      setSaved(true);
-    } catch (error) {
-      setContent("");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSave = async () => {
@@ -90,8 +66,31 @@ const Diary = () => {
   };
 
   useEffect(() => {
+    const fetchDiary = async () => {
+      setLoading(true);
+      if (!session?.user.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get("/api/auth/diary", {
+          params: {
+            date: formatDate(date),
+            userId: session?.user.id,
+          },
+        });
+
+        setContent(response.data?.content || "");
+        setSaved(true);
+      } catch (error) {
+        setContent("");
+      } finally {
+        setLoading(false);
+      }
+    };
     if (session?.user) fetchDiary();
-  }, [date, session?.user]);
+  }, [date, session?.user, formatDate, setLoading]);
 
   return (
     <div className="w-full h-full p-6 shadow-dark rounded-2xl bg-[#f7f7f7] flex flex-col">

@@ -21,7 +21,7 @@ const SignIn = () => {
 
   useEffect(() => {
     setLoading(false);
-  }, []);
+  }, [setLoading]);
 
   const handleGoogleLogin = async () => {
     setLoading(true);

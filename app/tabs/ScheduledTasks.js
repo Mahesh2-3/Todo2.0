@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
@@ -56,7 +56,7 @@ const ScheduledTasks = () => {
   const [showNewTask, setShowNewTask] = useState(false);
   const [editTask, setEditTask] = useState(null);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(`/api/auth/tasks?type=scheduled`);
@@ -81,13 +81,13 @@ const ScheduledTasks = () => {
       );
     }
     setLoading(false);
-  };
+  }, [setLoading]);
 
   useEffect(() => {
     if (session?.user) {
       fetchTasks();
     }
-  }, []);
+  }, [session, fetchTasks]);
 
   useEffect(() => {
     if (!isMobile) {

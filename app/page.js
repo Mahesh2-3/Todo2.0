@@ -20,7 +20,7 @@ const Home = () => {
     if (!session?.user && session !== undefined) {
       router.push("/signin");
     }
-  }, [session]);
+  }, [session, router]);
 
   // Don't show anything while redirecting
   if (!session?.user) return null;

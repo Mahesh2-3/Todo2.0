@@ -47,7 +47,7 @@ const Dashboard = () => {
       .then((res) => setTasks(res.data))
       .catch((err) => console.error("Fetch tasks failed:", err))
       .finally(() => setLoading(false));
-  }, [session?.user]);
+  }, [session?.user, setLoading]);
 
   useEffect(() => {
     if (!isMobile) {
