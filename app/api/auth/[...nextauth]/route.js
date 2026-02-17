@@ -37,29 +37,48 @@ export const authOptions = {
     strategy: "jwt",
   },
 
+  debug: true, // Enable debug messages in Vercel logs
+
   callbacks: {
     async jwt({ token, user }) {
+      console.log("🔐 [NextAuth] JWT Callback:", {
+        hasUser: !!user,
+        tokenId: token.id,
+      });
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
+      console.log("🔐 [NextAuth] Session Callback Start", {
+        email: session?.user?.email,
+        tokenId: token?.id,
+      });
       if (!session?.user) return session;
 
-      const client = await clientPromise;
-      const db = client.db(process.env.DB_NAME);
+      try {
+        const client = await clientPromise;
+        if (!process.env.DB_NAME) {
+          console.error("❌ [NextAuth] DB_NAME env variable is missing!");
+        }
+        const db = client.db(process.env.DB_NAME);
 
-      const dbUser = await db.collection("Users").findOne({
-        email: session.user.email,
-      });
+        const dbUser = await db.collection("Users").findOne({
+          email: session.user.email,
+        });
 
-      if (dbUser) {
-        session.user.id = dbUser._id.toString();
-        session.user.firstName = dbUser.firstName;
-        session.user.lastName = dbUser.lastName;
-        session.user.username = dbUser.username;
-        session.user.profileImage = dbUser.profileImage;
+        console.log("🔐 [NextAuth] DB User Found:", !!dbUser);
+
+        if (dbUser) {
+          session.user.id = dbUser._id.toString();
+          session.user.firstName = dbUser.firstName;
+          session.user.lastName = dbUser.lastName;
+          session.user.username = dbUser.username;
+          session.user.profileImage = dbUser.profileImage;
+        }
+      } catch (error) {
+        console.error("❌ [NextAuth] Session Callback Error:", error);
       }
 
       return session;
@@ -68,6 +87,7 @@ export const authOptions = {
 
   events: {
     async createUser({ user }) {
+      console.log("👤 [NextAuth] Creating New User:", user.email);
       try {
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
@@ -87,9 +107,9 @@ export const authOptions = {
           },
         );
 
-        // console.log("✅ Custom fields added to new user");
+        console.log("✅ [NextAuth] Custom fields added to new user");
       } catch (error) {
-        console.error("❌ Error updating user fields:", error);
+        console.error("❌ [NextAuth] Error updating user fields:", error);
       }
     },
   },

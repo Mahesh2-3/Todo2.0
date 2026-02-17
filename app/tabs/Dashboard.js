@@ -19,12 +19,17 @@ const Dashboard = () => {
   const { setLoading } = useLoading();
   const [stats, setStats] = useState({ weeklyStats: [], heatmapStats: [] });
   const [loadingGraph, setLoadingGraph] = useState(true);
+  const isMobile = window.innerWidth < 640;
+
+  const [range, setRange] = useState("weekly");
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setLoadingGraph(true);
-        const { data } = await axios.get("/api/auth/tasks/stats");
+        const { data } = await axios.get(
+          `/api/auth/tasks/stats?range=${range}`,
+        );
         setStats(data);
       } catch (error) {
         console.error("Failed to fetch dashboard stats", error);
@@ -34,7 +39,7 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [range]);
 
   if (loadingGraph) {
     return (
@@ -48,19 +53,38 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col gap-8 overflow-y-auto hide-scrollbar pb-20">
-      <h1 className="text-primary text-3xl font-bold py-4">Dashboard</h1>
+    <div className="w-full h-full flex flex-col sm:gap-8 gap-4 overflow-y-auto hide-scrollbar pb-20">
+      <h1 className="text-primary sm:text-3xl text-2xl font-bold sm:py-4">
+        Dashboard
+      </h1>
 
       {/* Area Chart Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-dark">
-        <h2 className="text-xl font-semibold mb-6 text-gray-700">
-          Weekly Completion Rate
-        </h2>
-        <div className="h-[300px] w-full">
+      <div className="bg-white sm:p-6 p-2 rounded-2xl shadow-dark">
+        <div className="flex justify-between items-center mb-6 max-sm:px-3 max-sm:pt-2">
+          <h2 className="sm:text-xl text-sm font-semibold text-gray-700">
+            Completion Rate ({range.charAt(0).toUpperCase() + range.slice(1)})
+          </h2>
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            {["weekly", "monthly", "yearly"].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-3 py-1 text-[10px] sm:text-sm rounded-md transition-all ${
+                  range === r
+                    ? "bg-white text-primary shadow-sm font-medium"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="sm:h-[300px] h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={stats.weeklyStats}
-              className="text-xs"
+              className="sm:text-xs text-[10px]"
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
             >
               <defs>
@@ -86,18 +110,18 @@ const Dashboard = () => {
       </div>
 
       {/* Heatmap Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-dark">
-        <h2 className="text-xl font-semibold mb-6 text-gray-700">
-          Activity Heatmap
+      <div className="bg-white sm:p-6 p-2 rounded-2xl shadow-dark">
+        <h2 className="sm:text-xl text-md font-semibold mb-6 max-sm:px-3 max-sm:pt-2 text-gray-700">
+          Activity
         </h2>
         <div className="w-full">
-          {/* can you put gap between months */}
           <CalendarHeatmap
             startDate={
-              new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+              isMobile
+                ? new Date(new Date().setMonth(new Date().getMonth() - 6))
+                : new Date(new Date().setFullYear(new Date().getFullYear() - 1))
             }
             endDate={new Date()}
-            gutterSize={1}
             values={stats.heatmapStats}
             classForValue={(value) => {
               if (!value) {

@@ -56,26 +56,39 @@ const Body = () => {
   };
 
   const menuItems = [
-    { label: "Daily Task", icon: <FaTasks />, component: <DailyTasks /> },
-    { label: "Diary", icon: <PiAddressBookFill />, component: <Diary /> },
+    { label: "Daily Task", icon: <FaTasks /> },
+    { label: "Diary", icon: <PiAddressBookFill /> },
     {
       label: "Scheduled Tasks",
       icon: <SlCalender />,
-      component: <ScheduledTasks />,
     },
-    { label: "Overview", icon: <MdDashboard />, component: <Overview /> },
+    { label: "Overview", icon: <MdDashboard /> },
     {
       label: "Dashboard",
       icon: <MdInsertChartOutlined />,
-      component: <Dashboard />,
     },
-    { label: "Help", icon: <FaQuestionCircle />, component: <Help /> },
+    { label: "Help", icon: <FaQuestionCircle /> },
   ];
 
   const renderContent = () => {
-    if (activeTab === "Account Info") return <AccountInfo />;
-    const foundItem = menuItems.find((item) => item.label === activeTab);
-    return foundItem ? foundItem.component : null;
+    switch (activeTab) {
+      case "Account Info":
+        return <AccountInfo />;
+      case "Daily Task":
+        return <DailyTasks />;
+      case "Diary":
+        return <Diary />;
+      case "Scheduled Tasks":
+        return <ScheduledTasks />;
+      case "Overview":
+        return <Overview />;
+      case "Dashboard":
+        return <Dashboard />;
+      case "Help":
+        return <Help />;
+      default:
+        return null;
+    }
   };
   return (
     <div className="flex justify-between relative lg:h-[82%] h-[88%]">

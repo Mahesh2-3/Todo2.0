@@ -148,7 +148,7 @@ const Overview = () => {
   // ─── Render ──────────────────────────────────────────────
   return (
     <div className="w-full h-full flex flex-col">
-      <h1 className="text-primary text-3xl font-bold py-4">Overview</h1>
+      <h1 className="text-primary text-3xl font-bold sm:py-4">Overview</h1>
       {/* Modal */}
       {showNewTask && (
         <NewTask
