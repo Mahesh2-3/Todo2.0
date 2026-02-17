@@ -39,7 +39,7 @@ const Notifications = () => {
       if (tasksRes.status === "fulfilled") {
         setTasks(tasksRes.value.data || []);
       } else {
-        console.error("Failed to fetch tasks notification:", tasksRes.reason);
+        // Silent error
       }
 
       // Handle Diary Response
@@ -53,10 +53,9 @@ const Notifications = () => {
         }
       } else {
         // Build resiliently: if diary fetch fails, just don't show the warning
-        console.error("Failed to fetch diary notification:", diaryRes.reason);
       }
     } catch (err) {
-      console.error("Unexpected error in notifications:", err);
+      // Silent error
     } finally {
       setLoading(false);
     }

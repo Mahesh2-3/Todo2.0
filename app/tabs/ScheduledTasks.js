@@ -75,10 +75,7 @@ const ScheduledTasks = () => {
 
       setTasks(filteredTasks);
     } catch (error) {
-      console.error(
-        "Failed to fetch tasks:",
-        error?.response?.data || error.message,
-      );
+      // Silent error
     }
     setLoading(false);
   }, [setLoading]);
@@ -116,10 +113,7 @@ const ScheduledTasks = () => {
       if (isScheduled) {
         setTasks((prev) => [createdTask, ...prev]);
       }
-    } catch (error) {
-      const errMsg = error.response?.data?.error || "Failed to add task";
-      console.error("Task creation failed:", errMsg);
-    }
+    } catch (error) {}
 
     setLoading(false);
   };
@@ -154,13 +148,8 @@ const ScheduledTasks = () => {
         updatedTask,
       );
     } catch (error) {
-      console.error("❌ Update failed. Rolling back...");
-
       // 🔄 3️⃣ Rollback if failed
       setTasks(previousTasks);
-
-      const errMsg = error.response?.data?.error || "Failed to update task";
-      console.error("Task update failed:", errMsg);
     }
 
     setLoading(false);
@@ -173,8 +162,6 @@ const ScheduledTasks = () => {
 
       setTasks((prev) => prev.filter((task) => task._id !== taskId));
     } catch (error) {
-      const errMsg = error.response?.data?.error || "Failed to delete task";
-      console.error("Task deletion failed:", errMsg);
       // Optional: show error toast
     }
     setLoading(false);

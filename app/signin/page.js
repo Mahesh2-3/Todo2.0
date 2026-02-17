@@ -35,7 +35,6 @@ const SignIn = () => {
   };
 
   const handleVideoError = () => {
-    console.error("Video failed to load");
     setVideoFinished(true);
   };
 

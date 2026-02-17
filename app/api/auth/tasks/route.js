@@ -76,7 +76,6 @@ export async function GET(req) {
 
     return NextResponse.json(tasks);
   } catch (error) {
-    console.error(error);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }
@@ -123,7 +122,6 @@ export async function POST(req) {
 
     return NextResponse.json({ task });
   } catch (error) {
-    console.error(error);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }

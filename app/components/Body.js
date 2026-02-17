@@ -35,9 +35,6 @@ const Overview = dynamic(() => import("../tabs/Overview"), {
 const Dashboard = dynamic(() => import("../tabs/Dashboard"), {
   loading: () => <p>Loading...</p>,
 });
-const Help = dynamic(() => import("../tabs/Help"), {
-  loading: () => <p>Loading...</p>,
-});
 
 const Body = () => {
   const { data: session } = useSession();
@@ -67,7 +64,6 @@ const Body = () => {
       label: "Dashboard",
       icon: <MdInsertChartOutlined />,
     },
-    { label: "Help", icon: <FaQuestionCircle /> },
   ];
 
   const renderContent = () => {
@@ -84,8 +80,6 @@ const Body = () => {
         return <Overview />;
       case "Dashboard":
         return <Dashboard />;
-      case "Help":
-        return <Help />;
       default:
         return null;
     }
@@ -120,8 +114,8 @@ const Body = () => {
               className="w-32 absolute -top-18 h-32 rounded-full border-6 border-white mb-2"
             />
             <div className="text-center mt-20">
-              <p className="font-bold text-lg">{session?.user.username}</p>
-              <p className="text-sm font-semibold text-white/80">
+              <p className="font-bold text-base">{session?.user.username}</p>
+              <p className="text-xs font-semibold text-white/80">
                 {session?.user.email}
               </p>
             </div>
@@ -143,8 +137,8 @@ const Body = () => {
                     : "hover:bg-white/20"
                 }`}
               >
-                <span className="scale-[1.3]">{item.icon}</span>
-                <span>{item.label}</span>
+                <span className="scale-[1.1]">{item.icon}</span>
+                <span className="text-sm">{item.label}</span>
               </div>
             ))}
           </nav>

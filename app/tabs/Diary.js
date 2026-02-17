@@ -50,16 +50,7 @@ const Diary = () => {
       });
       setSaved(true);
     } catch (error) {
-      console.error("❌ Failed to save diary");
-
-      if (error.response) {
-        console.error("Status:", error.response.status);
-        console.error("Data:", error.response.data);
-      } else if (error.request) {
-        console.error("No response from server:", error.request);
-      } else {
-        console.error("Request setup error:", error.message);
-      }
+      // Silent error
     } finally {
       setLoading(false);
     }

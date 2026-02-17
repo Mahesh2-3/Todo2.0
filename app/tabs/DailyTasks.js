@@ -63,7 +63,7 @@ const DailyTasks = () => {
       // Backend already gives today's daily instances
       setTasks(res.data);
     } catch (err) {
-      console.error("Fetch error:", err?.response?.data || err.message);
+      // Silent error
     }
 
     setLoading(false);
@@ -93,7 +93,7 @@ const DailyTasks = () => {
       // Backend generates today's instance automatically
       fetchTasks();
     } catch (err) {
-      console.error("Add failed:", err?.response?.data || err.message);
+      // Silent error
     }
 
     setLoading(false);
@@ -132,7 +132,7 @@ const DailyTasks = () => {
       await axios.delete(`/api/auth/tasks/${taskId}`);
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
     } catch (err) {
-      console.error("Delete failed:", err);
+      // Silent error
     }
     setLoading(false);
   };

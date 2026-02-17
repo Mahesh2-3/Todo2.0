@@ -45,7 +45,7 @@ const Overview = () => {
     axios
       .get(`/api/auth/tasks?type=all`)
       .then((res) => setTasks(res.data))
-      .catch((err) => console.error("Fetch tasks failed:", err))
+      .catch((err) => {})
       .finally(() => setLoading(false));
   }, [session?.user, setLoading]);
 
@@ -129,7 +129,6 @@ const Overview = () => {
         prev.map((t) => (t._id === data.task._id ? data.task : t)),
       );
     } catch (error) {
-      console.error("❌ Update failed, rolling back...", error);
       setTasks(previousTasks);
     }
     setLoading(false);

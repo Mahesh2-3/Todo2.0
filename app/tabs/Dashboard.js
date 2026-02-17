@@ -32,7 +32,7 @@ const Dashboard = () => {
         );
         setStats(data);
       } catch (error) {
-        console.error("Failed to fetch dashboard stats", error);
+        // Silent error
       } finally {
         setLoadingGraph(false);
       }

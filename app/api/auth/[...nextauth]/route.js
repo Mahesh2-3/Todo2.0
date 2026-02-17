@@ -41,34 +41,21 @@ export const authOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      console.log("🔐 [NextAuth] JWT Callback:", {
-        hasUser: !!user,
-        tokenId: token.id,
-      });
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("🔐 [NextAuth] Session Callback Start", {
-        email: session?.user?.email,
-        tokenId: token?.id,
-      });
       if (!session?.user) return session;
 
       try {
         const client = await clientPromise;
-        if (!process.env.DB_NAME) {
-          console.error("❌ [NextAuth] DB_NAME env variable is missing!");
-        }
         const db = client.db(process.env.DB_NAME);
 
         const dbUser = await db.collection("Users").findOne({
           email: session.user.email,
         });
-
-        console.log("🔐 [NextAuth] DB User Found:", !!dbUser);
 
         if (dbUser) {
           session.user.id = dbUser._id.toString();
@@ -78,7 +65,7 @@ export const authOptions = {
           session.user.profileImage = dbUser.profileImage;
         }
       } catch (error) {
-        console.error("❌ [NextAuth] Session Callback Error:", error);
+        // Silent error
       }
 
       return session;
@@ -87,7 +74,6 @@ export const authOptions = {
 
   events: {
     async createUser({ user }) {
-      console.log("👤 [NextAuth] Creating New User:", user.email);
       try {
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
@@ -106,10 +92,8 @@ export const authOptions = {
             },
           },
         );
-
-        console.log("✅ [NextAuth] Custom fields added to new user");
       } catch (error) {
-        console.error("❌ [NextAuth] Error updating user fields:", error);
+        // Silent error
       }
     },
   },
