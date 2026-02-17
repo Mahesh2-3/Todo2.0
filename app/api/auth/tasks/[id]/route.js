@@ -40,16 +40,37 @@ export async function DELETE(req, context) {
     }
     const userId = session?.user.id;
     const { id } = await context.params;
-    const deleted = await Task.findOneAndDelete({
-      _id: id,
-      userId,
-    });
+    const { searchParams } = new URL(req.url);
+    const deleteType = searchParams.get("deleteType");
 
-    if (!deleted) {
-      return NextResponse.json({ message: "Task not found" }, { status: 404 });
+    // 🛑 Hard Delete Series (Template + Instance)
+    if (deleteType === "series") {
+      const task = await Task.findOne({ _id: id, userId });
+      if (!task) {
+        return NextResponse.json(
+          { message: "Task not found" },
+          { status: 404 },
+        );
+      }
+
+      // If it's an instance, delete the template too
+      if (task.templateId) {
+        await Task.findByIdAndDelete(task.templateId);
+      }
+
+      await Task.findByIdAndDelete(id);
+      return NextResponse.json({ message: "Series Deleted" });
     }
 
-    return NextResponse.json({ message: "Deleted" });
+    // 🛑 Soft Delete (Default for ALL tasks now to support Undo)
+    const taskToCheck = await Task.findOne({ _id: id, userId });
+    if (taskToCheck) {
+      taskToCheck.isDeleted = true;
+      await taskToCheck.save();
+      return NextResponse.json({ message: "Task Deleted (Soft)" });
+    }
+
+    return NextResponse.json({ message: "Task not found" }, { status: 404 });
   } catch (error) {
     return NextResponse.json({ message: "Delete failed" }, { status: 500 });
   }

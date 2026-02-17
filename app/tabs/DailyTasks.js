@@ -98,15 +98,31 @@ const DailyTasks = () => {
 
     setLoading(false);
   };
+  // 🔄 Undo Function
+  const undoDelete = async (task) => {
+    try {
+      // Optimistic update: add back to UI
+      setTasks((prev) => [...prev, task]);
+
+      // Call API to restore (set isDeleted: false)
+      await axios.put(`/api/auth/tasks/${task._id}`, { isDeleted: false });
+
+      toast.success("Task restored", { autoClose: 1000, theme: "dark" });
+    } catch (err) {
+      toast.error("Undo failed", { autoClose: 1000, theme: "dark" });
+      // Rollback if failed
+      setTasks((prev) => prev.filter((t) => t._id !== task._id));
+    }
+  };
+
   const handleUpdateTask = async (updatedTask) => {
-    setLoading(true);
+    // 🧠 Optimistic Update
+    const originalTasks = [...tasks];
+    setTasks((prev) =>
+      prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)),
+    );
 
     try {
-      //update first and if the response is not ok change it back
-      const originalTasks = [...tasks];
-      setTasks((prev) =>
-        prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)),
-      );
       const res = await axios.put(
         `/api/auth/tasks/${updatedTask._id}`,
         updatedTask,
@@ -116,25 +132,73 @@ const DailyTasks = () => {
         toast.error("Update failed", { autoClose: 1000, theme: "dark" });
       }
     } catch (err) {
+      setTasks(originalTasks);
       if (err.response?.status === 404) {
         toast.error("Task not found", { autoClose: 1000, theme: "dark" });
       } else {
         toast.error("Update failed", { autoClose: 1000, theme: "dark" });
       }
     }
-
-    setLoading(false);
   };
 
   const handleDeleteTask = async (taskId) => {
-    setLoading(true);
+    const taskToDelete = tasks.find((t) => t._id === taskId);
+
+    // Optimistic update: remove from UI immediately
+    setTasks((prev) => prev.filter((t) => t._id !== taskId));
+
+    // Show Undo Toast
+    const toastId = toast(
+      <div className="flex justify-between items-center w-full">
+        <span>Task deleted</span>
+        <button
+          onClick={() => {
+            undoDelete(taskToDelete);
+            toast.dismiss(toastId);
+          }}
+          className="bg-primary text-white text-xs px-2 py-1 rounded ml-2 hover:bg-opacity-80 transition-colors"
+        >
+          Undo
+        </button>
+      </div>,
+      {
+        autoClose: 5000,
+        theme: "dark",
+        closeOnClick: false,
+        draggable: false,
+        style: { width: "100%" },
+      },
+    );
+
     try {
       await axios.delete(`/api/auth/tasks/${taskId}`);
-      setTasks((prev) => prev.filter((t) => t._id !== taskId));
     } catch (err) {
-      // Silent error
+      toast.error("Delete failed", { autoClose: 1000, theme: "dark" });
+      // Rollback
+      setTasks((prev) => [...prev, taskToDelete]);
     }
-    setLoading(false);
+  };
+
+  const handleDeleteSeries = async (task) => {
+    if (
+      !confirm(
+        "Deleting this means Deleting the entire Daily series of this daily tasks.Are you sure you want to delete this daily task series? Future occurrences will also be stopped.",
+      )
+    ) {
+      return;
+    }
+
+    // Optimistic update
+    setTasks((prev) => prev.filter((t) => t._id !== task._id));
+
+    try {
+      await axios.delete(`/api/auth/tasks/${task._id}?deleteType=series`);
+      toast.success("Series deleted", { autoClose: 1000, theme: "dark" });
+    } catch (err) {
+      toast.error("Series delete failed", { autoClose: 1000, theme: "dark" });
+      // Rollback
+      setTasks((prev) => [...prev, task]);
+    }
   };
 
   /* renderStatusChart removed */
@@ -258,6 +322,7 @@ const DailyTasks = () => {
                         setShowNewTask(true);
                       }}
                       onDelete={() => handleDeleteTask(task._id)}
+                      onDeleteSeries={() => handleDeleteSeries(task)}
                     />
                   ))
               )}
@@ -379,6 +444,7 @@ const DailyTasks = () => {
                         setShowNewTask(true);
                       }}
                       onDelete={() => handleDeleteTask(task._id)}
+                      onDeleteSeries={() => handleDeleteSeries(task)}
                     />
                   ))
               )}

@@ -28,6 +28,7 @@ export async function GET(req) {
     let filter = {
       userId,
       isTemplate: { $ne: true },
+      isDeleted: { $ne: true },
     };
 
     // 🔁 Daily tasks
@@ -36,6 +37,7 @@ export async function GET(req) {
         userId,
         isDaily: true,
         isTemplate: true,
+        isDeleted: { $ne: true },
       });
 
       for (const template of dailyTemplates) {

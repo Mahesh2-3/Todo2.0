@@ -17,6 +17,7 @@ import Image from "next/image";
 import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const statusOptions = [
   {
@@ -118,9 +119,25 @@ const ScheduledTasks = () => {
     setLoading(false);
   };
 
-  const handleUpdateTask = async (updatedTask) => {
-    setLoading(true);
+  // 🔄 Undo Function
+  const undoDelete = async (task) => {
+    try {
+      // Optimistic update: add back to UI
+      // Need to maintain sort order or just prepend? Prepending is safer for immediate visibility
+      setTasks((prev) => [task, ...prev]);
 
+      // Call API to restore (set isDeleted: false)
+      await axios.put(`/api/auth/tasks/${task._id}`, { isDeleted: false });
+
+      toast.success("Task restored", { autoClose: 1000, theme: "dark" });
+    } catch (err) {
+      toast.error("Undo failed", { autoClose: 1000, theme: "dark" });
+      // Rollback if failed
+      setTasks((prev) => prev.filter((t) => t._id !== task._id));
+    }
+  };
+
+  const handleUpdateTask = async (updatedTask) => {
     // 🧠 Backup previous state
     const previousTasks = tasks;
 
@@ -143,28 +160,50 @@ const ScheduledTasks = () => {
 
     try {
       // 🔥 2️⃣ Send API request
-      const response = await axios.put(
-        `/api/auth/tasks/${updatedTask._id}`,
-        updatedTask,
-      );
+      await axios.put(`/api/auth/tasks/${updatedTask._id}`, updatedTask);
     } catch (error) {
       // 🔄 3️⃣ Rollback if failed
       setTasks(previousTasks);
+      toast.error("Update failed", { autoClose: 1000, theme: "dark" });
     }
-
-    setLoading(false);
   };
 
   const handleDeleteTask = async (taskId) => {
-    setLoading(true);
+    const taskToDelete = tasks.find((t) => t._id === taskId);
+
+    // Optimistically remove from UI
+    setTasks((prev) => prev.filter((task) => task._id !== taskId));
+
+    // Show Undo Toast
+    const toastId = toast(
+      <div className="flex justify-between items-center w-full">
+        <span>Task deleted</span>
+        <button
+          onClick={() => {
+            undoDelete(taskToDelete);
+            toast.dismiss(toastId);
+          }}
+          className="bg-primary text-white text-xs px-2 py-1 rounded ml-2 hover:bg-opacity-80 transition-colors"
+        >
+          Undo
+        </button>
+      </div>,
+      {
+        autoClose: 5000,
+        theme: "dark",
+        closeOnClick: false,
+        draggable: false,
+        style: { width: "100%" },
+      },
+    );
+
     try {
       await axios.delete(`/api/auth/tasks/${taskId}`);
-
-      setTasks((prev) => prev.filter((task) => task._id !== taskId));
     } catch (error) {
-      // Optional: show error toast
+      toast.error("Delete failed", { autoClose: 1000, theme: "dark" });
+      // Rollback
+      if (taskToDelete) setTasks((prev) => [taskToDelete, ...prev]);
     }
-    setLoading(false);
   };
 
   return (
@@ -211,7 +250,7 @@ const ScheduledTasks = () => {
           <div className="lgg:w-1/2 w-full sm:h-full h-[93%] shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
             {/* Floating Plus Button - stays fixed */}
             <div
-              className="absolute w-[50px] z-[10] cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary sm:bottom-10 bottom-20 right-3"
+              className="absolute w-[50px] z-10 cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary sm:bottom-10 bottom-20 right-3"
               onClick={() => setShowNewTask(true)}
               role="button"
               tabIndex={0}
@@ -339,7 +378,7 @@ const ScheduledTasks = () => {
                     aria-label="Filter by Status"
                   >
                     <div
-                      className={`w-[20px] h-[20px] rounded-full border-[2px] ${selectedStatus.color} bg-white flex items-center justify-center shadow`}
+                      className={`w-[20px] h-[20px] rounded-full border-2 ${selectedStatus.color} bg-white flex items-center justify-center shadow`}
                     >
                       {selectedStatus.icon}
                     </div>
@@ -378,7 +417,7 @@ const ScheduledTasks = () => {
                           }`}
                         >
                           <div
-                            className={`w-[20px] h-[20px] rounded-full border-[2px] ${status.color} bg-white flex items-center justify-center shadow`}
+                            className={`w-[20px] h-[20px] rounded-full border-2 ${status.color} bg-white flex items-center justify-center shadow`}
                           >
                             {status.icon}
                           </div>

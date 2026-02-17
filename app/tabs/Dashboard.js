@@ -94,8 +94,15 @@ const Dashboard = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="name" />
-              <YAxis tickFormatter={(value) => `${value}%`} />
-              <Tooltip />
+              <YAxis tickFormatter={(value) => `${value}%`} domain={[0, 100]} />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "10px",
+                  border: "1px solid #FF6767",
+                }}
+                itemStyle={{ color: "#FF6767" }}
+                labelStyle={{ color: "#FF6767", fontWeight: "bold" }}
+              />
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <Area
                 type="monotone"

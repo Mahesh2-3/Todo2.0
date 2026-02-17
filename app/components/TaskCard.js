@@ -25,7 +25,13 @@ const statusStyles = {
   },
 };
 
-const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
+const TaskCard = ({
+  task,
+  onStatusChange,
+  onEdit,
+  onDelete,
+  onDeleteSeries,
+}) => {
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const [showCircleMenu, setShowCircleMenu] = useState(false);
   const optionsRef = useRef(null);
@@ -180,7 +186,7 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
           onClick={() => setShowOptionsMenu((prev) => !prev)}
         />
         {showOptionsMenu && (
-          <div className="absolute right-0 top-6 bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
+          <div className="absolute right-0 top-6 w-[120px] bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
             <div
               className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
               onClick={() => {
@@ -199,6 +205,17 @@ const TaskCard = ({ task, onStatusChange, onEdit, onDelete }) => {
             >
               <FaTrash /> Delete
             </div>
+            {onDeleteSeries && (
+              <div
+                className="flex items-center gap-2 cursor-pointer hover:text-red-700 border-t pt-2 mt-1"
+                onClick={() => {
+                  onDeleteSeries(task);
+                  setShowOptionsMenu(false);
+                }}
+              >
+                <FaTrash /> Delete Series
+              </div>
+            )}
           </div>
         )}
       </div>
