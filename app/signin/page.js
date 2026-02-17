@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import TopLoader from "../components/TopLoader";
@@ -13,9 +13,11 @@ const SignIn = () => {
   const { data: session, status } = useSession();
   const { setLoading } = useLoading();
 
+  const [videoFinished, setVideoFinished] = useState(false);
+
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/");
+      router.replace("/");
     }
   }, [status, router]);
 
@@ -28,16 +30,61 @@ const SignIn = () => {
     await signIn("google", { callbackUrl: "/" });
   };
 
-  if (status === "loading") return <TopLoader />;
+  const handleVideoEnd = () => {
+    setVideoFinished(true);
+  };
+
+  const handleVideoError = () => {
+    console.error("Video failed to load");
+    setVideoFinished(true);
+  };
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-white">
+        <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!videoFinished) {
+    return (
+      <div className="w-screen h-screen bg-white flex items-center justify-center relative">
+        <video
+          autoPlay
+          muted
+          playsInline
+          onEnded={handleVideoEnd}
+          onError={handleVideoError}
+          className="sm:w-[70vw] w-full sm:h-[70vh] h-full object-contain"
+          style={{ display: "block" }}
+        >
+          <source src="/introAnimation.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <button
+          onClick={() => setVideoFinished(true)}
+          className="absolute top-8 right-8 bg-black/50 hover:bg-black/70 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm transition-all z-50 pointer-events-auto cursor-pointer"
+        >
+          Skip Animation
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-[100vw] h-screen flex flex-col justify-center items-center bg-white">
+    <div className="w-screen h-screen flex flex-col justify-center items-center bg-white">
       <TopLoader />
-      <div className="text-5xl font-bold">Todo 2.0</div>
-      {/* <div className="flex h-[600px] w-[90%] max-w-[600px] relative rounded-2xl overflow-hidden"> */}
-      <div className="flex items-center justify-center flex-row h-[50vh]">
-        <div className="relative z-10 w-full px-10 flex flex-col justify-center bg-white/20 text-black">
-          <h2 className="text-3xl font-bold mb-8 text-center">
+      <div className="text-5xl font-bold border-b px-4 font-inter flex items-center gap-2">
+        <div>
+          Todo <span className="text-primary">2</span>.
+          <span className="text-primary">0</span>
+        </div>
+        <Image src="/check.png" alt="check icon" width={70} height={70} />
+      </div>
+      <div className="flex items-center justify-center flex-row h-[50vh] min-xs:w-[600px] w-full">
+        <div className="relative z-10 sm:w-[500px] w-[90%] py-10  px-10 flex flex-col justify-center bg-white/20 text-black">
+          <h2 className="text-xl font-bold mb-8 text-center">
             Sign In With Google
           </h2>
 
@@ -57,11 +104,10 @@ const SignIn = () => {
           width={600}
           height={600}
           priority
-          src="/signin.png"
+          src="/Logo.png"
           alt="signin background"
-          className="max-md:absolute max-md:blur-md w-[500px] h-[500px] object-cover opacity-60"
+          className="absolute blur-md w-[500px] h-[500px] object-cover opacity-60"
         />
-        {/* </div> */}
       </div>
     </div>
   );

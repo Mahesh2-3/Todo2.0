@@ -13,16 +13,19 @@ const Notifications = dynamic(() => import("./components/Notifications"), {
 
 const Home = () => {
   const [NotificationsOn, setNotificationsOn] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!session?.user && session !== undefined) {
+    if (status === "unauthenticated") {
       router.push("/signin");
     }
-  }, [session, router]);
+  }, [status, router]);
 
-  // Don't show anything while redirecting
+  if (status === "loading") {
+    return <TopLoader />;
+  }
+
   if (!session?.user) return null;
 
   return (

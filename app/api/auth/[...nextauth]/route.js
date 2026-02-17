@@ -14,6 +14,10 @@ export const authOptions = {
     },
   }),
 
+  pages: {
+    signIn: "/signin",
+  },
+
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -29,8 +33,18 @@ export const authOptions = {
     }),
   ],
 
+  session: {
+    strategy: "jwt",
+  },
+
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (!session?.user) return session;
 
       const client = await clientPromise;
@@ -79,6 +93,7 @@ export const authOptions = {
       }
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

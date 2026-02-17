@@ -6,7 +6,7 @@ import {
   FaSignOutAlt,
   FaTrashAlt,
 } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdInsertChartOutlined } from "react-icons/md";
 import { PiAddressBookFill } from "react-icons/pi";
 import { SlCalender } from "react-icons/sl";
 import { useRouter } from "next/navigation";
@@ -27,6 +27,9 @@ const Diary = dynamic(() => import("../tabs/Diary"), {
   loading: () => <p>Loading...</p>,
 });
 const ScheduledTasks = dynamic(() => import("../tabs/ScheduledTasks"), {
+  loading: () => <p>Loading...</p>,
+});
+const Overview = dynamic(() => import("../tabs/Overview"), {
   loading: () => <p>Loading...</p>,
 });
 const Dashboard = dynamic(() => import("../tabs/Dashboard"), {
@@ -60,7 +63,12 @@ const Body = () => {
       icon: <SlCalender />,
       component: <ScheduledTasks />,
     },
-    { label: "Dashboard", icon: <MdDashboard />, component: <Dashboard /> },
+    { label: "Overview", icon: <MdDashboard />, component: <Overview /> },
+    {
+      label: "Dashboard",
+      icon: <MdInsertChartOutlined />,
+      component: <Dashboard />,
+    },
     { label: "Help", icon: <FaQuestionCircle />, component: <Help /> },
   ];
 
@@ -151,13 +159,17 @@ const Body = () => {
       {/* Main Content */}
       <div className="xl:w-[68%] w-[96%] mx-auto h-full">
         {/* Menu Icon */}
-        <div className="absolute right-0 -top-8 xl:hidden z-[19]">
+        <div className="absolute right-0 -top-8 xl:hidden z-19">
           <button
             onClick={toggleMenu}
             aria-label="Toggle menu"
             className="bg-primary cursor-pointer text-white py-2 px-3 rounded-l-2xl"
           >
-            {Menutab ? <RiCloseFill size={27} /> : <RiMenuFill size={27} />}
+            {Menutab ? (
+              <RiCloseFill className="sm:size-[27] size-[20]" />
+            ) : (
+              <RiMenuFill className="sm:size-[27] size-[20]" />
+            )}
           </button>
         </div>
 

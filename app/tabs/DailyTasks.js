@@ -141,9 +141,9 @@ const DailyTasks = () => {
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <div className="lgg:text-3xl sm:text-2xl text-lg flex justify-start items-center gap-2 font-semibold">
+      <div className="lgg:text-3xl text-ellipsis overflow-hidden sm:text-2xl text-lg flex justify-start whitespace-nowrap items-center gap-2 font-semibold">
         Welcome back,{" "}
-        <span className="text-primary relative -top-0.5 lgg:text-4xl sm:text-3xl text-xl">
+        <span className="text-primary relative text-ellipsis overflow-hidden -top-0.5 lgg:text-4xl sm:text-3xl text-xl">
           {session?.user.username}
         </span>{" "}
         <Image
