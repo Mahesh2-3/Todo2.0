@@ -19,7 +19,7 @@ Todo 2.0 is a modern, full-stack task management application built with **Next.j
 - **Daily Tasks**: Focus on what needs to be done today.
 - **Scheduled Tasks**: Plan for the future with date-specific tasks.
 - **Status Tracking**: Easily update task status (Pending → In Progress → Completed).
-- **Search & Filter**: Find any task instantly by keyword, date, or status.
+- **Filter**: Find any task instantly by keyword, date, or status.
 - **Templates**: Create reusable task templates for recurring activities.
 
 ### 📔 Personal Diary
