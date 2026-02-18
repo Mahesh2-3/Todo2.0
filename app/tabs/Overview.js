@@ -196,9 +196,14 @@ const Overview = () => {
           <div className="lgg:w-1/2 w-full h-full  flex flex-col gap-4">
             {/* Progress Summary */}
             <div className="sm:h-[40%] h-[30%] shadow-dark sm:p-6 p-2 rounded-2xl">
-              <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">
-                Task Summary
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">
+                  Task Summary
+                </h3>
+                <p className="text-gray-500 text-sm px-4">
+                  Count : <b>{counts.total}</b>
+                </p>
+              </div>
               <div className="flex justify-around items-center h-full sm:pt-0 pt-10">
                 <StatusChart
                   label="Completed"
