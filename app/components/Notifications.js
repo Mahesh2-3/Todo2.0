@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import { getTodayDate } from "../lib/dateUtils";
 import { FaRegClock, FaRegStickyNote, FaSpinner } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 
@@ -21,7 +22,7 @@ const Notifications = () => {
       const [tasksRes, diaryRes] = await Promise.allSettled([
         axios.get(`/api/auth/tasks?type=all`),
         (async () => {
-          const yesterday = new Date();
+          const yesterday = getTodayDate();
           yesterday.setDate(yesterday.getDate() - 1);
           // Use 'en-CA' (YYYY-MM-DD) for local date format consistency
           const formattedYesterday = yesterday.toLocaleDateString("en-CA");
@@ -67,7 +68,7 @@ const Notifications = () => {
   }, [session?.user?.id]);
 
   // Memoized derived state to prevent recalculation on every render
-  const today = new Date().toLocaleDateString("en-CA");
+  const today = getTodayDate().toLocaleDateString("en-CA");
 
   const expiredTasks = useMemo(() => {
     return tasks.filter(

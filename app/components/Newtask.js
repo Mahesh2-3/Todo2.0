@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { getToday } from "@/app/lib/dateUtils";
 
 const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getToday();
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
 
   const [title, setTitle] = useState("");

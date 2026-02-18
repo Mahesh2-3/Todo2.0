@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
+import { getToday, getTodayDate } from "@/app/lib/dateUtils";
 import axios from "axios";
 import TaskCard from "../components/TaskCard";
 import NewTask from "../components/Newtask";
@@ -29,7 +30,7 @@ const Overview = () => {
   const [tasks, setTasks] = useState([]);
   const [dateFilter, setDateFilter] = useState("Total");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [customDate, setCustomDate] = useState(new Date());
+  const [customDate, setCustomDate] = useState(getTodayDate());
   const [tab, settab] = useState("Both");
   const isMobile = useMediaQuery({ query: "(max-width:860px)" });
 
@@ -58,8 +59,10 @@ const Overview = () => {
   }, [isMobile]);
 
   // ─── Helpers ─────────────────────────────────────────────
-  const todayStr = new Date().toISOString().split("T")[0];
-  const yesterdayStr = new Date(Date.now() - 86400000)
+  const todayStr = getToday();
+  const yesterdayStr = new Date(
+    getTodayDate().setDate(getTodayDate().getDate() - 1),
+  )
     .toISOString()
     .split("T")[0];
   const toStr = (d) => d.toISOString().split("T")[0];
@@ -67,7 +70,9 @@ const Overview = () => {
   // ─── Derived data (memoised) ─────────────────────────────
   const { filteredTasks, counts, expiringTasks } = useMemo(() => {
     const stats = { total: 0, completed: 0, progress: 0, pending: 0 };
-    const tomorrowStr = new Date(Date.now() + 86400000)
+    const tomorrowStr = new Date(
+      getTodayDate().setDate(getTodayDate().getDate() + 1),
+    )
       .toISOString()
       .split("T")[0];
 

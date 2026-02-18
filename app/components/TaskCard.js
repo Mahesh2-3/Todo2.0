@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { getToday } from "@/app/lib/dateUtils";
 import {
   FaEdit,
   FaTrash,
@@ -37,7 +38,7 @@ const TaskCard = ({
   const optionsRef = useRef(null);
   const circleMenuRef = useRef(null);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getToday();
   const isExpired = task.status !== "Completed" && task.endDate < today;
 
   const safeStatus = statusStyles[task.status] ? task.status : "Pending";

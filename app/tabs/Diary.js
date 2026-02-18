@@ -3,12 +3,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen, FaSave, FaCheck } from "react-icons/fa";
 import { useLoading } from "../context/LoadingContext";
+import { getTodayDate } from "../lib/dateUtils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
 const Diary = () => {
   const { data: session } = useSession();
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(getTodayDate());
   const { loading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(true);
@@ -28,7 +29,7 @@ const Diary = () => {
   };
 
   const isToday = () => {
-    const today = new Date();
+    const today = getTodayDate();
     return (
       date.getFullYear() === today.getFullYear() &&
       date.getMonth() === today.getMonth() &&

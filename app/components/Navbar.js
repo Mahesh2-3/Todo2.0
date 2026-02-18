@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import Image from "next/image";
+import { getToday, getTodayDate } from "../lib/dateUtils";
 
 const Navbar = ({ notifi }) => {
   const [NotificationsOn, setNotificationsOn] = useState(true);
 
-  const today = new Date();
+  const today = getTodayDate();
   const day = today.toLocaleDateString("en-US", { weekday: "long" });
-  const formattedDate = today.toLocaleDateString("en-GB");
 
   return (
     <div className="w-full md:h-[10%] h-[7%] px-8 flex items-center bg-white justify-between rounded-md relative  shadow-dark">
@@ -38,7 +38,7 @@ const Navbar = ({ notifi }) => {
         </button>
         <div className="text-right sm:text-base text-xs">
           <p className="font-semibold">{day}</p>
-          <p className="text-blue-600">{formattedDate}</p>
+          <p className="text-blue-600">{getToday()}</p>
         </div>
       </div>
     </div>

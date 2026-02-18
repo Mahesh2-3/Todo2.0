@@ -20,6 +20,7 @@ import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import { getToday, getTodayDate } from "../lib/dateUtils";
 
 const statusOptions = [
   {
@@ -283,7 +284,7 @@ const DailyTasks = () => {
                   </span>
                 </div>
                 <span className="flex items-center text-sm text-gray-600 justify-center gap-2">
-                  {new Date().toLocaleDateString()} • today
+                  {getTodayDate().toLocaleDateString()} • today
                 </span>
               </div>
 

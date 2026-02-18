@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { getToday } from "@/app/lib/dateUtils";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
@@ -62,7 +63,7 @@ const ScheduledTasks = () => {
     try {
       const response = await axios.get(`/api/auth/tasks?type=scheduled`);
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = getToday();
 
       const filteredTasks = response.data?.filter((task) => {
         if (task.isDaily) return false; // ignore daily templates
@@ -103,7 +104,7 @@ const ScheduledTasks = () => {
 
       const createdTask = response.data.task;
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = getToday();
 
       const isScheduled =
         !createdTask.isDaily && // ignore daily templates
@@ -141,7 +142,7 @@ const ScheduledTasks = () => {
     // 🧠 Backup previous state
     const previousTasks = tasks;
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = getToday();
 
     const isScheduled =
       !updatedTask.isDaily &&

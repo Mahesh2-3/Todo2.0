@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { getTodayDate } from "../lib/dateUtils";
 import {
   AreaChart,
   Area,
@@ -125,10 +126,18 @@ const Dashboard = () => {
           <CalendarHeatmap
             startDate={
               isMobile
-                ? new Date(new Date().setMonth(new Date().getMonth() - 6))
-                : new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+                ? new Date(
+                    new Date(getTodayDate()).setMonth(
+                      getTodayDate().getMonth() - 6,
+                    ),
+                  )
+                : new Date(
+                    new Date(getTodayDate()).setFullYear(
+                      getTodayDate().getFullYear() - 1,
+                    ),
+                  )
             }
-            endDate={new Date()}
+            endDate={getTodayDate()}
             values={stats.heatmapStats}
             classForValue={(value) => {
               if (!value) {
