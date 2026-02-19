@@ -40,11 +40,26 @@ const DailyTemplates = dynamic(() => import("../tabs/DailyTemplates"), {
   loading: () => <p>Loading...</p>,
 });
 
+const menuItems = [
+  { label: "Today's Task", icon: <FaTasks /> },
+  { label: "Manage Daily Templates", icon: <FaEdit /> },
+  { label: "Diary", icon: <PiAddressBookFill /> },
+  {
+    label: "Scheduled Tasks",
+    icon: <SlCalender />,
+  },
+  { label: "Overview", icon: <MdDashboard /> },
+  {
+    label: "Dashboard",
+    icon: <MdInsertChartOutlined />,
+  },
+];
+
 const Body = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const { setActiveTab } = useActiveTab();
-  const [activeTab, setactiveTab] = useState("Daily Task");
+  const [activeTab, setactiveTab] = useState(menuItems[0].label);
   const [Menutab, setMenutab] = useState(false);
   const [deleteClicked, setdeleteClicked] = useState(false);
 
@@ -55,21 +70,6 @@ const Body = () => {
   const toggleMenu = () => {
     setMenutab((prev) => !prev);
   };
-
-  const menuItems = [
-    { label: "Today's Task", icon: <FaTasks /> },
-    { label: "Manage Daily Templates", icon: <FaEdit /> },
-    { label: "Diary", icon: <PiAddressBookFill /> },
-    {
-      label: "Scheduled Tasks",
-      icon: <SlCalender />,
-    },
-    { label: "Overview", icon: <MdDashboard /> },
-    {
-      label: "Dashboard",
-      icon: <MdInsertChartOutlined />,
-    },
-  ];
 
   const renderContent = () => {
     switch (activeTab) {
