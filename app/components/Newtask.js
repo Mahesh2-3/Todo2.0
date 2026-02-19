@@ -8,11 +8,22 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState(today);
+  // If calling from DailyTemplates, we default to "Daily" logic (no dates needed initially, or set to today/empty)
+  // But wait, Daily Templates don't use start/end date effectively?
+  // They do for the template schema, but usually it's ignored for templates?
+  // Actually, for templates, we might not render date inputs if they are irrelevant.
+  // BUT, to fix the "uncontrolled" error, we must insure they are not undefined.
+  // The error likely comes because we might be setting them to undefined somewhere?
+  // Look at line 12: `callingFrom == "ScheduledTasks" ? tomorrow : today`. This seems safe.
+  // However, if `isDaily` is true, we might be disabling them.
+  // The error `value={startDate}` receiving `undefined` is the key.
+  // Let's ensure they are always strings.
+
+  const [startDate, setStartDate] = useState(today || "");
   const [endDate, setEndDate] = useState(
-    callingFrom == "ScheduledTasks" ? tomorrow : today,
+    callingFrom == "ScheduledTasks" ? tomorrow : today || "",
   );
-  const [isDaily, setIsDaily] = useState(false); // default checked
+  const [isDaily, setIsDaily] = useState(callingFrom === "DailyTemplates"); // Default to true if from templates
 
   useEffect(() => {
     if (existingTask) {

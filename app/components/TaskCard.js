@@ -188,15 +188,17 @@ const TaskCard = ({
         />
         {showOptionsMenu && (
           <div className="absolute right-0 top-6 w-[120px] bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
-              onClick={() => {
-                onEdit?.(task);
-                setShowOptionsMenu(false);
-              }}
-            >
-              <FaEdit /> Edit
-            </div>
+            {!task.templateId && (
+              <div
+                className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                onClick={() => {
+                  onEdit?.(task);
+                  setShowOptionsMenu(false);
+                }}
+              >
+                <FaEdit /> Edit
+              </div>
+            )}
             <div
               className="flex items-center gap-2 cursor-pointer hover:text-primary"
               onClick={() => {

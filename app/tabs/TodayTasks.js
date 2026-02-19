@@ -59,7 +59,7 @@ const DailyTasks = () => {
     setLoading(true);
 
     try {
-      const res = await axios.get(`/api/auth/tasks?type=daily`);
+      const res = await axios.get(`/api/auth/tasks?type=today`);
 
       // Backend already gives today's daily instances
       setTasks(res.data);

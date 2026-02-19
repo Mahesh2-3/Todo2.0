@@ -5,6 +5,7 @@ import {
   FaQuestionCircle,
   FaSignOutAlt,
   FaTrashAlt,
+  FaEdit,
 } from "react-icons/fa";
 import { MdDashboard, MdInsertChartOutlined } from "react-icons/md";
 import { PiAddressBookFill } from "react-icons/pi";
@@ -20,7 +21,7 @@ import dynamic from "next/dynamic";
 const AccountInfo = dynamic(() => import("../tabs/AccountInfo"), {
   loading: () => <p>Loading...</p>,
 });
-const DailyTasks = dynamic(() => import("../tabs/DailyTasks"), {
+const DailyTasks = dynamic(() => import("../tabs/TodayTasks"), {
   loading: () => <p>Loading...</p>,
 });
 const Diary = dynamic(() => import("../tabs/Diary"), {
@@ -33,6 +34,9 @@ const Overview = dynamic(() => import("../tabs/Overview"), {
   loading: () => <p>Loading...</p>,
 });
 const Dashboard = dynamic(() => import("../tabs/Dashboard"), {
+  loading: () => <p>Loading...</p>,
+});
+const DailyTemplates = dynamic(() => import("../tabs/DailyTemplates"), {
   loading: () => <p>Loading...</p>,
 });
 
@@ -53,7 +57,8 @@ const Body = () => {
   };
 
   const menuItems = [
-    { label: "Daily Task", icon: <FaTasks /> },
+    { label: "Today's Task", icon: <FaTasks /> },
+    { label: "Manage Daily Templates", icon: <FaEdit /> },
     { label: "Diary", icon: <PiAddressBookFill /> },
     {
       label: "Scheduled Tasks",
@@ -70,7 +75,7 @@ const Body = () => {
     switch (activeTab) {
       case "Account Info":
         return <AccountInfo />;
-      case "Daily Task":
+      case "Today's Task":
         return <DailyTasks />;
       case "Diary":
         return <Diary />;
@@ -80,6 +85,8 @@ const Body = () => {
         return <Overview />;
       case "Dashboard":
         return <Dashboard />;
+      case "Manage Daily Templates":
+        return <DailyTemplates />;
       default:
         return null;
     }

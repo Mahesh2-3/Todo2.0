@@ -2,8 +2,12 @@
 //   return new Date().toISOString().split("T")[0];
 // };
 export const getToday = () => {
-  const date = new Date();
-  return date.toISOString().split("T")[0];
+  const now = new Date();
+  return new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  ).toLocaleDateString("en-CA"); // YYYY-MM-DD in local time
 };
 
 export const getTodayDate = () => {
