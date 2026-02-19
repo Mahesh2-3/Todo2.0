@@ -1,5 +1,0 @@
-adjust text size in the side bar 
-remove the help option 
-reduce the sizes of the assests and dynamically load them
-remove console logs in client, server and scan for final time
-update the README.md file
