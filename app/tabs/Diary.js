@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen, FaSave, FaCheck } from "react-icons/fa";
 import { useLoading } from "../context/LoadingContext";
@@ -13,6 +13,8 @@ const Diary = () => {
   const { loading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const lastSavedContent = useRef(""); // To track last saved content to prevent duplicates and loops
 
   const formatDate = useCallback((d) => d.toLocaleDateString("en-CA"), []);
 
@@ -37,25 +39,53 @@ const Diary = () => {
     );
   };
 
-  const handleSave = async () => {
-    setLoading(true);
-    if (!session?.user.id) {
-      setLoading(false);
-      return;
-    }
+  const handleSave = async (manual = true) => {
+    if (!session?.user.id) return;
+
+    if (content === lastSavedContent.current) return;
+
+    if (manual) setLoading(true);
+    else setIsSaving(true);
+
     try {
       await axios.post("/api/auth/diary", {
         userId: session?.user.id,
         date: formatDate(date),
         content: typeof content === "string" ? content : "",
       });
+      lastSavedContent.current = content;
       setSaved(true);
     } catch (error) {
-      // Silent error
+      console.log(error);
     } finally {
-      setLoading(false);
+      if (manual) setLoading(false);
+      setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (content !== lastSavedContent.current) {
+        handleSave(false);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [content]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (content !== lastSavedContent.current) {
+        handleSave(false);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [content]);
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -73,10 +103,13 @@ const Diary = () => {
           },
         });
 
-        setContent(response.data?.content || "");
+        const currentContent = response.data?.content || "";
+        setContent(currentContent);
+        lastSavedContent.current = currentContent; // Sync ref
         setSaved(true);
       } catch (error) {
         setContent("");
+        lastSavedContent.current = "";
       } finally {
         setLoading(false);
       }
@@ -90,18 +123,23 @@ const Diary = () => {
       <div className="w-full relative text-primary flex items-center justify-center gap-2 pb-4">
         <FaBookOpen className="text-primary font-bold text-3xl" />
         Diary
-        <button
-          onClick={handleSave}
-          disabled={saved}
-          className={`absolute right-0 flex items-center gap-2 px-4 py-1 rounded-full text-sm font-semibold transition ${
-            saved
-              ? "bg-green-100 text-green-600"
-              : "bg-primary text-white hover:bg-red-600"
-          }`}
-        >
-          {saved ? <FaCheck /> : <FaSave />}
-          {saved ? "Saved" : "Save"}
-        </button>
+        <div className="absolute right-0 flex items-center gap-2">
+          {isSaving && (
+            <span className="text-xs text-gray-400 italic">Saving...</span>
+          )}
+          <button
+            onClick={() => handleSave(true)}
+            disabled={saved}
+            className={`flex items-center gap-2 px-4 py-1 rounded-full text-sm font-semibold transition ${
+              saved
+                ? "bg-green-100 text-green-600"
+                : "bg-primary text-white hover:bg-red-600"
+            }`}
+          >
+            {saved ? <FaCheck /> : <FaSave />}
+            {saved ? "Saved" : "Save"}
+          </button>
+        </div>
       </div>
 
       {/* Date Navigation */}
@@ -145,6 +183,7 @@ const Diary = () => {
               setContent(e.target.value);
               setSaved(false);
             }}
+            onBlur={() => handleSave(false)} // Save when user clicks away
             className="w-full resize-none outline-none text-base font-medium text-gray-700 p-4 leading-[29px] bg-[url(https://img.freepik.com/premium-photo/notebook-paper-background-blank-pages-notebook_322958-3818.jpg?w=996)]"
             style={{
               backgroundSize: "100% 29px",

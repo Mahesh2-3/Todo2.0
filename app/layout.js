@@ -6,6 +6,8 @@ import { LoadingProvider } from "./context/LoadingContext";
 import { Inter } from "next/font/google";
 import { TabProvider } from "./context/ActiveTab";
 import Providers from "./context/provider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   variable: "--font-geist-inter",
@@ -46,6 +48,7 @@ export default function RootLayout({ children }) {
           <LoadingProvider>
             <SearchProvider>
               <TabProvider>{children}</TabProvider>
+              <ToastContainer position="top-right" theme="dark" />
             </SearchProvider>
           </LoadingProvider>
         </Providers>

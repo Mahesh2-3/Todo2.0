@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import TaskCard from "../components/TaskCard";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
@@ -150,14 +150,14 @@ const DailyTasks = () => {
 
     // Show Undo Toast
     const toastId = toast(
-      <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full gap-4">
         <span>Task deleted</span>
         <button
           onClick={() => {
             undoDelete(taskToDelete);
             toast.dismiss(toastId);
           }}
-          className="bg-primary text-white text-xs px-2 py-1 rounded ml-2 hover:bg-opacity-80 transition-colors"
+          className="bg-primary rounded-2xl text-white text-xs px-2 py-1 hover:bg-opacity-80 transition-colors"
         >
           Undo
         </button>
@@ -166,6 +166,7 @@ const DailyTasks = () => {
         autoClose: 5000,
         theme: "dark",
         closeOnClick: false,
+        position: "top-right",
         draggable: false,
         style: { width: "100%" },
       },
