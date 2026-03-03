@@ -147,10 +147,10 @@ const TaskCard = ({
 
       {/* Task Content */}
       <div className="ml-4 flex-1">
-        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-all">
+        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-words">
           {task.title}
         </h2>
-        <p className="text-gray-600 sm:text-sm text-xs line-clamp-2 break-all">
+        <p className="text-gray-600 sm:text-sm text-xs line-clamp-2 break-words">
           {task.description}
         </p>
 
