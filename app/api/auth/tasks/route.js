@@ -5,7 +5,7 @@ import DailyCompletion from "@/app/models/DailyCompletion";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 
-import { getToday } from "@/app/lib/dateUtils";
+import { getToday, getDatesBetween } from "@/app/lib/dateUtils";
 
 // =========================
 // ✅ GET TASKS
@@ -42,31 +42,62 @@ export async function GET(req) {
         isDeleted: { $ne: true },
       });
 
-      const bulkOps = dailyTemplates.map((template) => ({
-        updateOne: {
-          filter: {
-            userId,
-            templateId: template._id,
-            startDate: today,
-            isTemplate: false,
-          },
-          update: {
-            $setOnInsert: {
-              userId,
-              title: template.title,
-              description: template.description,
-              type: "daily",
-              isDaily: true, // Keep distinct indicator if needed by frontend
-              isTemplate: false,
-              templateId: template._id,
-              startDate: today,
-              endDate: today,
-              status: "Pending",
+      const bulkOps = [];
+
+      for (const template of dailyTemplates) {
+        // Find the last created instance for this template
+        const lastInstance = await Task.findOne({
+          userId,
+          templateId: template._id,
+          isTemplate: false,
+        }).sort({ startDate: -1 });
+
+        // Determine starting date for backfilling
+        let startDateObj;
+        if (lastInstance && lastInstance.startDate) {
+          const lastDate = new Date(lastInstance.startDate);
+          // Start backfilling from the day after the last instance
+          lastDate.setDate(lastDate.getDate() + 1);
+          startDateObj = lastDate;
+        } else {
+          startDateObj = template.createdAt
+            ? new Date(template.createdAt)
+            : new Date();
+        }
+
+        const startDateStr = startDateObj.toLocaleDateString("en-CA");
+
+        // getDatesBetween will return all dates from startDateStr up to today (inclusive)
+        const missingDates = getDatesBetween(startDateStr, today, 60);
+
+        for (const date of missingDates) {
+          bulkOps.push({
+            updateOne: {
+              filter: {
+                userId,
+                templateId: template._id,
+                startDate: date,
+                isTemplate: false,
+              },
+              update: {
+                $setOnInsert: {
+                  userId,
+                  title: template.title,
+                  description: template.description,
+                  type: "daily",
+                  isDaily: true,
+                  isTemplate: false,
+                  templateId: template._id,
+                  startDate: date,
+                  endDate: date,
+                  status: "Pending",
+                },
+              },
+              upsert: true,
             },
-          },
-          upsert: true,
-        },
-      }));
+          });
+        }
+      }
 
       if (bulkOps.length > 0) {
         await Task.bulkWrite(bulkOps);
