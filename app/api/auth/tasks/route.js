@@ -10,12 +10,6 @@ import { getToday, getDatesBetween } from "@/app/lib/dateUtils";
 // =========================
 // ✅ GET TASKS
 // =========================
-// =========================
-// ✅ GET TASKS
-// =========================
-// =========================
-// ✅ GET TASKS
-// =========================
 export async function GET(req) {
   try {
     await connectDB();
@@ -44,18 +38,37 @@ export async function GET(req) {
 
       const bulkOps = [];
 
-      for (const template of dailyTemplates) {
-        // Find the last created instance for this template
-        const lastInstance = await Task.findOne({
-          userId,
-          templateId: template._id,
-          isTemplate: false,
-        }).sort({ startDate: -1 });
+      // Optimize: Fetch the last instances for all templates in a single query
+      const templateIds = dailyTemplates.map((t) => t._id);
 
-        // Determine starting date for backfilling
+      const lastInstances = await Task.aggregate([
+        {
+          $match: {
+            userId,
+            templateId: { $in: templateIds },
+            isTemplate: false
+          }
+        },
+        { $sort: { startDate: -1 } },
+        {
+          $group: {
+            _id: "$templateId",
+            lastStartDate: { $first: "$startDate" }
+          }
+        }
+      ]);
+
+      const lastInstanceMap = new Map();
+      lastInstances.forEach((inst) => {
+        lastInstanceMap.set(inst._id.toString(), inst.lastStartDate);
+      });
+
+      for (const template of dailyTemplates) {
         let startDateObj;
-        if (lastInstance && lastInstance.startDate) {
-          const lastDate = new Date(lastInstance.startDate);
+        const lastStartDate = lastInstanceMap.get(template._id.toString());
+
+        if (lastStartDate) {
+          const lastDate = new Date(lastStartDate);
           // Start backfilling from the day after the last instance
           lastDate.setDate(lastDate.getDate() + 1);
           startDateObj = lastDate;
@@ -185,6 +198,10 @@ export async function POST(req) {
 
     const userId = session?.user.id;
     const body = await req.json();
+
+    if (!body.title || typeof body.title !== "string" || body.title.trim() === "") {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    }
 
     // 🟢 Daily Template Creation
     if (body.isDaily) {

@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/mongoose";
 import Diary from "@/app/models/Diary";
 import { getServerSession } from "next-auth";
@@ -31,17 +32,23 @@ export async function POST(req) {
     const userId = session?.user.id;
     const { date, content } = await req.json();
 
-    let diary = await Diary.findOne({ userId, date });
-    if (diary) {
-      diary.content = content || "";
-      await diary.save();
-    } else {
-      diary = new Diary({ userId, date, content });
-      await diary.save();
+    if (!date || typeof date !== "string") {
+      return Response.json({ error: "Valid date is required" }, { status: 400 });
     }
 
+    if (content !== undefined && typeof content !== "string") {
+      return Response.json({ error: "Content must be a string" }, { status: 400 });
+    }
+
+    // Use findOneAndUpdate with upsert to prevent race conditions and save DB round-trips
+    await Diary.findOneAndUpdate(
+      { userId, date },
+      { content: content || "" },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
     return Response.json({ message: "Saved successfully" });
-  } catch {
+  } catch (error) {
     return Response.json({ error: "Failed to save diary" }, { status: 500 });
   }
 }

@@ -20,14 +20,12 @@ export async function PUT(req) {
 
     const { firstName, lastName, username, email, profileImage } = body;
 
-    // 4️⃣ Check existing users
-    const existingUsers = await User.find({
+    // 4️⃣ Check existing users for conflict
+    // Optimization: Avoid loading all conflicting users in memory, let DB do the filtering
+    const conflictUser = await User.findOne({
+      _id: { $ne: session.user.id },
       $or: [{ username }, { email }],
     });
-
-    const conflictUser = existingUsers.find(
-      (u) => u._id.toString() !== session.user.id,
-    );
 
     if (conflictUser) {
       return Response.json(

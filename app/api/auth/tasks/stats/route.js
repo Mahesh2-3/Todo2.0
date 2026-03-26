@@ -16,7 +16,11 @@ export async function GET(req) {
     const userId = session.user.id; // Corrected: session.user.id is always available thanks to callback
 
     // Fetch all tasks for the user, excluding templates
-    const tasks = await Task.find({ userId, isTemplate: { $ne: true } });
+    // Optimization: Select only necessary fields to reduce memory payload
+    const tasks = await Task.find(
+      { userId, isTemplate: { $ne: true } },
+      { status: 1, createdAt: 1, updatedAt: 1, _id: 0 }
+    ).lean();
 
     // 1. Stats based on range (weekly/monthly/yearly)
     const url = new URL(req.url);

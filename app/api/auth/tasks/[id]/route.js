@@ -6,6 +6,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 import { getToday } from "@/app/lib/dateUtils";
 
+import mongoose from "mongoose";
+
 export async function PUT(req, context) {
   try {
     await connectDB();
@@ -16,6 +18,10 @@ export async function PUT(req, context) {
     }
     const userId = session?.user.id;
     const { id } = await context.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Invalid task ID" }, { status: 400 });
+    }
 
     // 🔵 Handle Normal/Scheduled/Daily Instance Update
     // Since we are using instances for daily tasks now, we update the task document directly.
@@ -60,6 +66,11 @@ export async function DELETE(req, context) {
     }
     const userId = session?.user.id;
     const { id } = await context.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: "Invalid task ID" }, { status: 400 });
+    }
+
     const { searchParams } = new URL(req.url);
     const deleteType = searchParams.get("deleteType");
 
