@@ -18,19 +18,36 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Dashboard = () => {
   const { setLoading } = useLoading();
+  // Cache stats per range to prevent unnecessary re-fetching
+  const [cachedStats, setCachedStats] = useState({});
   const [stats, setStats] = useState({ weeklyStats: [], heatmapStats: [] });
   const [loadingGraph, setLoadingGraph] = useState(true);
-  const isMobile = window.innerWidth < 640;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+  }, []);
 
   const [range, setRange] = useState("weekly");
 
   useEffect(() => {
     const fetchStats = async () => {
+      // Use cached data if available for this range
+      if (cachedStats[range]) {
+        setStats(cachedStats[range]);
+        setLoadingGraph(false);
+        return;
+      }
+
       try {
         setLoadingGraph(true);
         const { data } = await axios.get(
           `/api/auth/tasks/stats?range=${range}`,
         );
+
+        // Ensure heatmap doesn't flicker/reset by carrying over existing heatmap data if not included
+        // or just set the whole data object to state and cache
+        setCachedStats(prev => ({ ...prev, [range]: data }));
         setStats(data);
       } catch (error) {
         // Silent error
@@ -40,9 +57,11 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, [range]);
+  }, [range, cachedStats]);
 
-  if (loadingGraph) {
+  // Use a soft loading indicator or blur instead of unmounting the whole component so heatmap stays visible
+  // Only fully block UI on initial load where we have NO stats
+  if (loadingGraph && !stats.weeklyStats.length) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <AiOutlineLoading3Quarters
@@ -81,7 +100,7 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-        <div className="sm:h-[300px] h-[200px] w-full">
+        <div className={`sm:h-[300px] h-[200px] w-full transition-opacity duration-300 ${loadingGraph ? 'opacity-50' : 'opacity-100'}`}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={stats.weeklyStats}

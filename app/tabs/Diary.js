@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaBookOpen, FaSave, FaCheck } from "react-icons/fa";
+import { FaBookOpen, FaSave, FaCheck, FaCalendarAlt } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useLoading } from "../context/LoadingContext";
 import { getTodayDate } from "../lib/dateUtils";
 import axios from "axios";
@@ -10,6 +12,8 @@ import { useSession } from "next-auth/react";
 const Diary = () => {
   const { data: session } = useSession();
   const [date, setDate] = useState(getTodayDate());
+  const [writtenDates, setWrittenDates] = useState([]);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const { loading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(true);
@@ -117,6 +121,27 @@ const Diary = () => {
     if (session?.user) fetchDiary();
   }, [date, session?.user, formatDate, setLoading]);
 
+  useEffect(() => {
+    const fetchWrittenDates = async () => {
+      if (!session?.user.id) return;
+      try {
+        const response = await axios.get("/api/auth/diary", {
+          params: { fetchDates: "true" }
+        });
+        if (Array.isArray(response.data)) {
+          // Add a dummy time to ensure date matches properly despite timezone
+          const dates = response.data.map((d) => new Date(`${d}T12:00:00Z`));
+          setWrittenDates(dates);
+        }
+      } catch (error) {
+        console.error("Failed to fetch written dates:", error);
+      }
+    };
+    if (session?.user) {
+      fetchWrittenDates();
+    }
+  }, [session?.user, saved]); // Re-fetch dates when a diary entry is saved
+
   return (
     <div className="w-full h-full p-6 shadow-dark rounded-2xl bg-[#f7f7f7] flex flex-col">
       {/* Top Heading */}
@@ -143,7 +168,7 @@ const Diary = () => {
       </div>
 
       {/* Date Navigation */}
-      <div className="w-full flex justify-between items-center pb-6">
+      <div className="w-full flex justify-between items-center pb-6 relative">
         <button
           onClick={handlePrevDay}
           aria-label="Previous Day"
@@ -151,9 +176,31 @@ const Diary = () => {
         >
           <IoIosArrowBack className="text-xl hover:scale-110 cursor-pointer" />
         </button>
-        <span className="text-sm font-medium select-none">
-          {date.toDateString()}
-        </span>
+
+        <div className="flex items-center gap-2 cursor-pointer relative" onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
+          <span className="text-sm font-medium select-none hover:text-primary transition">
+            {date.toDateString()}
+          </span>
+          <FaCalendarAlt className="text-primary hover:scale-110 transition" />
+
+          {isDatePickerOpen && (
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50 shadow-xl rounded-lg" onClick={(e) => e.stopPropagation()}>
+              <DatePicker
+                selected={date}
+                onChange={(d) => {
+                  setDate(d);
+                  setIsDatePickerOpen(false);
+                }}
+                inline
+                highlightDates={[{
+                  "react-datepicker__day--highlighted-custom": writtenDates
+                }]}
+                maxDate={new Date()}
+              />
+            </div>
+          )}
+        </div>
+
         <button
           onClick={() => {
             if (!isToday()) handleNextDay();
@@ -169,6 +216,18 @@ const Diary = () => {
           />
         </button>
       </div>
+
+      {/* Global CSS for DatePicker Highlights */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .react-datepicker__day--highlighted-custom {
+          background-color: #4CAF50 !important;
+          color: white !important;
+          border-radius: 50%;
+        }
+        .react-datepicker__day--highlighted-custom:hover {
+          background-color: #45a049 !important;
+        }
+      `}} />
 
       {/* Diary Input Area */}
       <div className="flex-1 w-full sm:px-6 py-10 hide-scrollbar relative">

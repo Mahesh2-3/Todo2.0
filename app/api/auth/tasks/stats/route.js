@@ -141,12 +141,14 @@ export async function GET(req) {
     }
 
     // 2. Heatmap Stats (Last 365 days)
-    // Group completed tasks by date (YYYY-MM-DD)
+    // Group completed tasks by date (YYYY-MM-DD in local time, not UTC)
     const heatmapMap = new Map();
 
     tasks.forEach((task) => {
       if (task.status === "Completed") {
-        const dateStr = new Date(task.updatedAt).toISOString().split("T")[0];
+        const d = new Date(task.updatedAt || task.createdAt);
+        // Convert properly to YYYY-MM-DD using local time context instead of toISOString() which forces UTC
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         heatmapMap.set(dateStr, (heatmapMap.get(dateStr) || 0) + 1);
       }
     });
