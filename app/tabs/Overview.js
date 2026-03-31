@@ -231,7 +231,7 @@ const Overview = () => {
 
             {/* Expiring */}
             <div className="sm:h-[60%] h-[70%] shadow-dark p-4 rounded-2xl space-y-4 pb-20 relative">
-              <h3 className="absolute top-6 right-4 bg-white p-4 z-10 text-red-500 font-semibold">
+              <h3 className="absolute top-6 right-4 bg-[var(--bg-card)] p-4 z-10 text-red-500 font-semibold">
                 Tasks Expiring Tomorrow
               </h3>
               <div className="pt-18 h-full flex flex-col gap-4 overflow-y-scroll hide-scrollbar">
@@ -273,7 +273,7 @@ const Overview = () => {
         {(tab == "Tasks" || tab == "Both") && (
           <div className="lgg:w-1/2 w-full h-full pb-20 shadow-dark px-6 pt-6 rounded-l-2xl rounded-br-2xl relative">
             {/* Filters */}
-            <div className="absolute top-6 right-4 flex gap-4 p-2 z-10">
+            <div className="absolute top-6 right-4 flex gap-4 p-2 z-10 bg-[var(--bg-main)]">
               {/* Date Filter */}
               <Dropdown
                 label={
@@ -377,7 +377,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
       role="button"
       tabIndex={0}
       aria-label="Dropdown"
-      className="flex items-center justify-between px-4 py-2 border sm:text-base text-sm rounded cursor-pointer bg-white"
+      className="flex items-center justify-between px-4 py-2 border border-[var(--border-color)] sm:text-base text-sm rounded cursor-pointer bg-[var(--bg-card)] text-[var(--text-main)]"
     >
       <span>{label}</span>
       <FaChevronDown
@@ -385,7 +385,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
       />
     </div>
     {open && (
-      <div className="absolute mt-1 w-full bg-white shadow rounded z-10">
+      <div className="absolute mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow rounded z-10 text-[var(--text-main)]">
         {children}
       </div>
     )}
@@ -393,7 +393,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
 );
 
 const Item = ({ children, onClick }) => (
-  <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={onClick}>
+  <div className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" onClick={onClick}>
     {children}
   </div>
 );

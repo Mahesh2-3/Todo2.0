@@ -81,8 +81,8 @@ const Notifications = () => {
   }, [tasks]);
 
   return (
-    <div className="w-full max-w-[550px] sm:w-[400px] md:w-[550px] md:h-[700px] h-[600px] p-6 sm:p-8 flex flex-col bg-white shadow-dark gap-6 rounded-2xl max-h-[90vh]">
-      <div className="flex items-center gap-2 text-lg sm:text-xl font-semibold text-primary border-b pb-4 border-gray-100">
+    <div className="w-full max-w-[550px] sm:w-[400px] md:w-[550px] md:h-[700px] h-[600px] p-6 sm:p-8 flex flex-col bg-[var(--bg-card)] text-[var(--text-main)] shadow-dark gap-6 rounded-2xl max-h-[90vh]">
+      <div className="flex items-center gap-2 text-lg sm:text-xl font-semibold text-primary border-b pb-4 border-[var(--border-color)]">
         <FaRegClock className="text-xl" />
         <span>Notifications</span>
       </div>
@@ -103,7 +103,7 @@ const Notifications = () => {
                   <h2 className="font-semibold text-sm sm:text-base mb-1">
                     Diary Missing
                   </h2>
-                  <p className="leading-snug text-gray-700">
+                  <p className="leading-snug text-[var(--text-main)]">
                     You didn’t write a diary entry on{" "}
                     <strong className="text-yellow-900">
                       {missingDiaryDate}
@@ -115,9 +115,9 @@ const Notifications = () => {
             )}
 
             {/* Expired Tasks */}
-            <div className="border border-gray-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md bg-white">
+            <div className="border border-[var(--border-color)] rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md bg-[var(--bg-main)]">
               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-800">
+                <h2 className="text-base sm:text-lg font-semibold">
                   {expiredTasks.length === 0 ? (
                     <span className="text-green-600">No Expired Tasks</span>
                   ) : (
@@ -138,7 +138,7 @@ const Notifications = () => {
                 )}
               </div>
 
-              <p className="text-sm text-gray-500 mb-4 leading-relaxed">
+              <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed">
                 {expiredTasks.length === 0
                   ? "You’re all caught up! Great job staying on top of your schedule."
                   : "These tasks are past their due date. Complete them or update their deadlines."}
@@ -149,13 +149,13 @@ const Notifications = () => {
                   {expiredTasks.map((task) => (
                     <div
                       key={task._id}
-                      className="bg-gray-50 border border-gray-100 px-3 sm:px-4 py-3 rounded-lg flex justify-between items-center hover:bg-gray-100 transition-colors"
+                      className="bg-[var(--bg-card)] border border-[var(--border-color)] px-3 sm:px-4 py-3 rounded-lg flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <div className="flex flex-col flex-1 min-w-0 pr-2">
-                        <span className="font-medium text-sm text-gray-800 truncate">
+                        <span className="font-medium text-sm truncate">
                           {task.title}
                         </span>
-                        <span className="text-xs text-gray-500 truncate">
+                        <span className="text-xs text-[var(--text-muted)] truncate">
                           Due: {task.endDate}
                         </span>
                       </div>
@@ -174,9 +174,9 @@ const Notifications = () => {
                 </div>
               )}
 
-              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs sm:text-sm text-gray-500">
+              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs sm:text-sm text-[var(--text-muted)]">
                 <span>Current Status</span>
-                <span className="font-medium text-gray-700">
+                <span className="font-medium text-[var(--text-main)]">
                   {pendingTaskCount}{" "}
                   {pendingTaskCount === 1 ? "Start" : "Pending"} Task
                   {pendingTaskCount !== 1 ? "s" : ""}

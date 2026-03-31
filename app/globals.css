@@ -12,6 +12,30 @@
   --breakpoint-lg7:700px;
 }
 
+@layer base {
+  :root {
+    --bg-main: #ffffff;
+    --bg-card: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+  }
+
+  .dark {
+    --bg-main: #111827;
+    --bg-card: #1f2937;
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
 .hide-scrollbar {
   overflow-y: scroll;              /* enables scrolling */
   scrollbar-width: none;          /* Firefox */

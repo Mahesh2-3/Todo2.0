@@ -88,7 +88,7 @@ const AccountInfo = () => {
   };
 
   return (
-    <div className="h-full flex justify-center items-center relative shadow-dark bg-white p-12 rounded-2xl overflow-hidden">
+    <div className="h-full flex justify-center items-center relative shadow-dark bg-[var(--bg-card)] text-[var(--text-main)] p-12 rounded-2xl overflow-hidden transition-colors">
       <div className="rounded-xl w-full h-full">
         <h2 className="text-2xl font-bold mb-4 border-b-2 border-primary pb-2">
           Account Information
@@ -129,7 +129,7 @@ const AccountInfo = () => {
         {/* FORM */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6 bg-white rounded-md py-4"
+          className="space-y-6 rounded-md py-4"
         >
           <div>
             <label className="block font-semibold text-sm">First Name</label>
@@ -138,7 +138,7 @@ const AccountInfo = () => {
               {...register("firstName", {
                 required: "First name is required",
               })}
-              className="w-full border p-2 rounded"
+              className="w-full border border-[var(--border-color)] p-2 rounded bg-transparent"
             />
             {errors.firstName && (
               <p className="text-primary text-sm">{errors.firstName.message}</p>
@@ -152,7 +152,7 @@ const AccountInfo = () => {
               {...register("lastName", {
                 required: "Last name is required",
               })}
-              className="w-full border p-2 rounded"
+              className="w-full border border-[var(--border-color)] p-2 rounded bg-transparent"
             />
             {errors.lastName && (
               <p className="text-primary text-sm">{errors.lastName.message}</p>
@@ -166,7 +166,7 @@ const AccountInfo = () => {
               {...register("username", {
                 required: "Username is required",
               })}
-              className="w-full border p-2 rounded"
+              className="w-full border border-[var(--border-color)] p-2 rounded bg-transparent"
             />
             {errors.username && (
               <p className="text-primary text-sm">{errors.username.message}</p>
@@ -181,7 +181,7 @@ const AccountInfo = () => {
               type="email"
               {...register("email")}
               disabled
-              className="w-full border p-2 rounded bg-gray-100 cursor-not-allowed"
+              className="w-full border border-[var(--border-color)] p-2 rounded bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
             />
           </div>
 

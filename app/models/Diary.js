@@ -15,6 +15,9 @@ const diarySchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
+// Indexes for performance
+diarySchema.index({ userId: 1, date: 1 });
+
 // ✅ Prevent OverwriteModelError
 const Diary = mongoose.models.Diary || mongoose.model("Diary", diarySchema);
 

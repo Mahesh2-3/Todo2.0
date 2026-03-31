@@ -171,7 +171,7 @@ const Body = () => {
       </div>
 
       {/* Main Content */}
-      <div className="xl:w-[68%] w-[96%] mx-auto h-full">
+      <div className="xl:w-[68%] w-[96%] mx-auto h-full bg-[var(--bg-main)]">
         {/* Menu Icon */}
         <div className="absolute right-0 -top-8 xl:hidden z-19">
           <button
