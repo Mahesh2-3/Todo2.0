@@ -96,7 +96,7 @@ const Body = () => {
       {deleteClicked && <DeleteAccount setdeleteOpen={setdeleteClicked} />}
       {/* Sidebar */}
       <div
-        className={`z-50 xl:w-[28%] sm:w-[350px] w-[300px] h-full bg-primary text-white flex flex-col justify-between rounded-tr-2xl py-6 px-4
+        className={`z-50 xl:w-[28%] sm:w-[350px] w-[300px] h-full bg-(--bg-orange) text-white flex flex-col justify-between rounded-tr-2xl py-6 px-4
           xl:static absolute top-0 left-0 transition-transform duration-300 ease-in-out
           ${Menutab ? "translate-x-0" : "-translate-x-[150%]"} xl:translate-x-0`}
       >
@@ -171,7 +171,7 @@ const Body = () => {
       </div>
 
       {/* Main Content */}
-      <div className="xl:w-[68%] w-[96%] mx-auto h-full bg-[var(--bg-main)]">
+      <div className="xl:w-[68%] w-[96%] mx-auto h-full">
         {/* Menu Icon */}
         <div className="absolute right-0 -top-8 xl:hidden z-19">
           <button

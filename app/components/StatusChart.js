@@ -12,8 +12,8 @@ const StatusChart = ({ label, value, color }) => {
           text={`${Math.round(value) || 0}%`}
           styles={buildStyles({
             pathColor: color,
-            trailColor: "#e5e7eb",
-            textColor: "#000",
+            trailColor: "var(--border-color)",
+            textColor: "var(--text-main)",
             textSize: "22px",
           })}
         />
