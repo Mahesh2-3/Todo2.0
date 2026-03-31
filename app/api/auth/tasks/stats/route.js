@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/mongoose";
 import Task from "@/app/models/Task";
+import Streak from "@/app/models/Streak";
+import Diary from "@/app/models/Diary";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 
@@ -141,24 +143,57 @@ export async function GET(req) {
     }
 
     // 2. Heatmap Stats (Last 365 days)
-    // Group completed tasks by date (YYYY-MM-DD in local time, not UTC)
+    // We combine legacy task data and diary data, PLUS any new streak data,
+    // merging them into a single map so we don't break backwards compatibility.
+
     const heatmapMap = new Map();
 
+    // Add completed tasks to map
     tasks.forEach((task) => {
       if (task.status === "Completed") {
         const d = new Date(task.updatedAt || task.createdAt);
-        // Convert properly to YYYY-MM-DD using local time context instead of toISOString() which forces UTC
         const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        heatmapMap.set(dateStr, (heatmapMap.get(dateStr) || 0) + 1);
+
+        const existing = heatmapMap.get(dateStr) || { tasksCompleted: 0, diaryWritten: false };
+        existing.tasksCompleted += 1;
+        heatmapMap.set(dateStr, existing);
       }
     });
 
-    const heatmapStats = Array.from(heatmapMap.entries()).map(
-      ([date, count]) => ({
+    // Add legacy diaries to map
+    const diaries = await Diary.find({ userId }).lean();
+    diaries.forEach((diary) => {
+      const dateStr = diary.date; // already YYYY-MM-DD
+      const existing = heatmapMap.get(dateStr) || { tasksCompleted: 0, diaryWritten: false };
+      existing.diaryWritten = true;
+      heatmapMap.set(dateStr, existing);
+    });
+
+    // Merge any newer Streak model data (which overrides/enhances previous if they drifted)
+    const streaks = await Streak.find({ userId }).lean();
+    streaks.forEach((streak) => {
+        const dateStr = streak.date;
+        const existing = heatmapMap.get(dateStr) || { tasksCompleted: 0, diaryWritten: false };
+
+        // Take the max just to be safe so we don't lose data
+        existing.tasksCompleted = Math.max(existing.tasksCompleted, streak.tasksCompleted);
+        existing.diaryWritten = existing.diaryWritten || streak.diaryWritten;
+
+        heatmapMap.set(dateStr, existing);
+    });
+
+    const heatmapStats = Array.from(heatmapMap.entries()).map(([date, data]) => {
+      let count = data.tasksCompleted;
+      if (count === 0 && data.diaryWritten) {
+         count = 1; // Base activity level for diary
+      }
+      return {
         date,
         count,
-      }),
-    );
+        tasksCompleted: data.tasksCompleted,
+        diaryWritten: data.diaryWritten
+      };
+    });
 
     return NextResponse.json({ weeklyStats, heatmapStats });
   } catch (error) {

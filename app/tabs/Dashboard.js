@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import CalendarHeatmap from "react-calendar-heatmap";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import "react-calendar-heatmap/dist/styles.css";
 import { useLoading } from "../context/LoadingContext";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -79,9 +80,9 @@ const Dashboard = () => {
       </h1>
 
       {/* Area Chart Section */}
-      <div className="bg-white sm:p-6 p-2 rounded-2xl shadow-dark">
+      <div className="bg-[var(--bg-card)] text-[var(--text-main)] sm:p-6 p-2 rounded-2xl shadow-dark transition-colors">
         <div className="flex justify-between items-center mb-6 max-sm:px-3 max-sm:pt-2">
-          <h2 className="sm:text-xl text-sm font-semibold text-gray-700">
+          <h2 className="sm:text-xl text-sm font-semibold text-[var(--text-main)]">
             Completion Rate ({range.charAt(0).toUpperCase() + range.slice(1)})
           </h2>
           <div className="flex bg-gray-100 rounded-lg p-1">
@@ -137,11 +138,12 @@ const Dashboard = () => {
       </div>
 
       {/* Heatmap Section */}
-      <div className="bg-white sm:p-6 p-2 rounded-2xl shadow-dark">
-        <h2 className="sm:text-xl text-md font-semibold mb-6 max-sm:px-3 max-sm:pt-2 text-gray-700">
+      <div className="bg-[var(--bg-card)] text-[var(--text-main)] sm:p-6 p-2 rounded-2xl shadow-dark transition-colors">
+        <h2 className="sm:text-xl text-md font-semibold mb-6 max-sm:px-3 max-sm:pt-2 text-[var(--text-main)]">
           Activity
         </h2>
         <div className="w-full">
+          <ReactTooltip id="heatmap-tooltip" />
           <CalendarHeatmap
             startDate={
               isMobile
@@ -165,8 +167,24 @@ const Dashboard = () => {
               return `color-github-${Math.min(value.count, 4)}`;
             }}
             tooltipDataAttrs={(value) => {
+              if (!value || !value.date) {
+                return {
+                  "data-tooltip-id": "heatmap-tooltip",
+                  "data-tooltip-content": "No activity"
+                };
+              }
+              let tip = `${value.date}: `;
+              if (value.tasksCompleted > 0) {
+                 tip += `${value.tasksCompleted} tasks completed`;
+                 if (value.diaryWritten) tip += ` & diary written`;
+              } else if (value.diaryWritten) {
+                 tip += `📝 Diary entry added`;
+              } else {
+                 tip += `No activity`;
+              }
               return {
-                "data-tip": `${value.date} has count: ${value.count || 0}`,
+                "data-tooltip-id": "heatmap-tooltip",
+                "data-tooltip-content": tip
               };
             }}
             showWeekdayLabels={true}

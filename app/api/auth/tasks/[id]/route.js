@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/mongoose";
 import Task from "@/app/models/Task";
 import DailyCompletion from "@/app/models/DailyCompletion";
+import Streak from "@/app/models/Streak";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
-import { getToday } from "@/app/lib/dateUtils";
+import { getToday, getTodayDate } from "@/app/lib/dateUtils";
 
 import mongoose from "mongoose";
 
@@ -25,9 +26,41 @@ export async function PUT(req, context) {
 
     // 🔵 Handle Normal/Scheduled/Daily Instance Update
     // Since we are using instances for daily tasks now, we update the task document directly.
+    const oldTask = await Task.findOne({ _id: id, userId });
     const task = await Task.findOneAndUpdate({ _id: id, userId }, body, {
       new: true,
     });
+
+    // Check if task status changed to Completed
+    if (oldTask && oldTask.status !== "Completed" && task.status === "Completed") {
+        const today = getTodayDate();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+
+        let currentStreak = await Streak.findOne({ userId, date: todayStr });
+        let yesterdayStreak = await Streak.findOne({ userId, date: yesterdayStr });
+        let previousCount = yesterdayStreak ? yesterdayStreak.streakCount : 0;
+
+        if (!currentStreak) {
+            currentStreak = new Streak({
+                userId,
+                date: todayStr,
+                tasksCompleted: 1,
+                diaryWritten: false,
+                streakCount: previousCount + 1,
+                activityType: ["task"]
+            });
+        } else {
+            currentStreak.tasksCompleted += 1;
+            if (!currentStreak.activityType.includes("task")) {
+                currentStreak.activityType.push("task");
+            }
+        }
+        await currentStreak.save();
+    }
 
     if (!task) {
       return NextResponse.json({ message: "Task not found" }, { status: 404 });

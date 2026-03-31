@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SearchProvider } from "./context/SearchContext";
+import { ThemeProviderClient } from "./components/ThemeProviderClient";
 import { LoadingProvider } from "./context/LoadingContext";
 import { Inter } from "next/font/google";
 import { TabProvider } from "./context/ActiveTab";
@@ -41,9 +42,11 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
     >
       <body>
+        <ThemeProviderClient>
         <Providers>
           <LoadingProvider>
             <SearchProvider>
@@ -52,6 +55,7 @@ export default function RootLayout({ children }) {
             </SearchProvider>
           </LoadingProvider>
         </Providers>
+        </ThemeProviderClient>
       </body>
     </html>
   );

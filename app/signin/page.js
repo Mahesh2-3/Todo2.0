@@ -72,7 +72,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center bg-white">
+    <div className="w-screen h-screen flex flex-col justify-center items-center bg-gradient-to-r from-blue-50 to-indigo-50">
       <TopLoader />
       <div className="text-5xl font-bold border-b px-4 font-inter flex items-center gap-2">
         <div>
@@ -82,14 +82,14 @@ const SignIn = () => {
         <Image src="/check.png" alt="check icon" width={70} height={70} />
       </div>
       <div className="flex items-center justify-center flex-row h-[50vh] min-xs:w-[600px] w-full">
-        <div className="relative z-10 sm:w-[500px] w-[90%] py-10  px-10 flex flex-col justify-center bg-white/20 text-black">
+        <div className="relative z-10 sm:w-[500px] w-[90%] py-10 px-10 flex flex-col justify-center bg-white shadow-xl rounded-2xl p-8 border border-gray-100 text-black">
           <h2 className="text-xl font-bold mb-8 text-center">
             Sign In With Google
           </h2>
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white text-black font-semibold py-3 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 bg-white text-black font-semibold py-3 rounded-lg shadow-md transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border border-gray-200"
           >
             <FcGoogle size={22} />
             Continue with Google
