@@ -71,13 +71,13 @@ const TaskCard = ({
 
   return (
     <div
-      className={`relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full ${
-        isExpired ? "bg-gray-100 opacity-70" : "bg-white"
+      className={`relative rounded-xl border border-(--border-color) shadow-sm p-4 flex justify-between items-start w-full ${
+        isExpired ? "bg-(--bg-main) opacity-70" : "bg-(--bg-card)"
       }`}
     >
       {/* Expired Stamp */}
       {isExpired && (
-        <div className="absolute top-2 right-2 text-[10px] px-2 py-0.5 font-bold text-red-600 border-[1.5px] border-red-600 rotate-[-10deg] uppercase bg-white shadow-sm">
+        <div className="absolute top-2 right-2 text-[10px] px-2 py-0.5 font-bold text-red-600 border-[1.5px] border-red-600 rotate-[-10deg] uppercase bg-(--bg-card) shadow-sm">
           Expired
         </div>
       )}
@@ -118,7 +118,7 @@ const TaskCard = ({
                 onClick={() => handleStatusChange("Completed")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-10 h-10 rounded-full border-2 border-green-500 bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-green-500 bg-(--bg-card) flex items-center justify-center shadow">
                   <FaCheck color="#22c55e" />
                 </div>
               </motion.div>
@@ -127,7 +127,7 @@ const TaskCard = ({
                 onClick={() => handleStatusChange("In Progress")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-(--bg-card) flex items-center justify-center shadow">
                   <FaHourglassHalf color="#eab308" />
                 </div>
               </motion.div>
@@ -136,7 +136,7 @@ const TaskCard = ({
                 onClick={() => handleStatusChange("Pending")}
                 whileTap={{ scale: 0.9 }}
               >
-                <div className="w-10 h-10 rounded-full border-2 border-primary bg-white flex items-center justify-center shadow">
+                <div className="w-10 h-10 rounded-full border-2 border-primary bg-(--bg-card) flex items-center justify-center shadow">
                   <FaRegCircle color="#ef4444" />
                 </div>
               </motion.div>
@@ -147,15 +147,15 @@ const TaskCard = ({
 
       {/* Task Content */}
       <div className="ml-4 flex-1">
-        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-words">
+        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-words text-(--text-main)">
           {task.title}
         </h2>
-        <p className="text-gray-600 sm:text-sm text-xs line-clamp-2 break-words">
+        <p className="text-(--text-muted) sm:text-sm text-xs line-clamp-2 break-words">
           {task.description}
         </p>
 
         <div className="flex mt-4 w-full justify-between items-center">
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-(--text-muted)">
             {task.startDate === task.endDate ? (
               <>Created on: {task.startDate}</>
             ) : (
@@ -183,11 +183,11 @@ const TaskCard = ({
       {/* Options */}
       <div className="relative ml-2" ref={optionsRef}>
         <BsThreeDotsVertical
-          className="text-gray-500 cursor-pointer"
+          className="text-(--text-muted) cursor-pointer"
           onClick={() => setShowOptionsMenu((prev) => !prev)}
         />
         {showOptionsMenu && (
-          <div className="absolute right-0 top-6 w-[120px] bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
+          <div className="absolute right-0 top-6 w-[120px] bg-(--bg-card) shadow-lg border border-(--border-color) p-2 rounded z-10 flex flex-col gap-2 text-sm">
             {!task.templateId && (
               <div
                 className="flex items-center gap-2 cursor-pointer hover:text-blue-600"

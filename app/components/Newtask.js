@@ -27,11 +27,11 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
 
   useEffect(() => {
     if (existingTask) {
-      setTitle(existingTask.title);
-      setDescription(existingTask.description);
-      setStartDate(existingTask.startDate);
-      setEndDate(existingTask.endDate);
-      setIsDaily(existingTask.isDaily);
+      setTitle(existingTask.title || "");
+      setDescription(existingTask.description || "");
+      setStartDate(existingTask.startDate || "");
+      setEndDate(existingTask.endDate || "");
+      setIsDaily(existingTask.isDaily || false);
     }
   }, [existingTask]);
 
@@ -67,11 +67,11 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl p-6 sm:w-[440px] w-[400px] shadow-lg relative">
+      <div className="bg-(--bg-card) text-(--text-main) rounded-xl p-6 sm:w-[440px] w-[400px] shadow-lg relative">
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 cursor-pointer text-xl"
+          className="absolute top-4 right-4 cursor-pointer text-xl text-(--text-muted) hover:text-(--text-main)"
         >
           ✕
         </button>
@@ -83,7 +83,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
         {/* Toggle Set as Daily */}
         {callingFrom == "DailyTasks" && (
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-(--text-main)">
               Set as Daily
             </span>
             <div
@@ -92,11 +92,11 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
               tabIndex={0}
               aria-label="Toggle daily task"
               className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
-                isDaily ? "bg-primary" : "bg-gray-300"
+                isDaily ? "bg-primary" : "bg-(--border-color)"
               }`}
             >
               <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+                className={`bg-(--bg-main) w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
                   isDaily ? "translate-x-5" : "translate-x-0"
                 }`}
               ></div>
@@ -110,7 +110,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
             <label className="block text-sm font-semibold">Title</label>
             <input
               type="text"
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-(--border-color) bg-(--bg-main) text-(--text-main) px-3 py-2 rounded"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -120,7 +120,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
           <div>
             <label className="block text-sm font-semibold">Description</label>
             <textarea
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-(--border-color) bg-(--bg-main) text-(--text-main) px-3 py-2 rounded"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
@@ -131,7 +131,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
             <label className="block text-sm font-semibold">Start Date</label>
             <input
               type="date"
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-(--border-color) bg-(--bg-main) text-(--text-main) px-3 py-2 rounded"
               value={startDate}
               disabled={isDaily}
               onChange={(e) => setStartDate(e.target.value)}
@@ -143,7 +143,7 @@ const NewTask = ({ onAdd, onUpdate, onClose, existingTask, callingFrom }) => {
             <label className="block text-sm font-semibold">End Date</label>
             <input
               type="date"
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-(--border-color) bg-(--bg-main) text-(--text-main) px-3 py-2 rounded"
               value={endDate}
               disabled={isDaily}
               onChange={(e) => setEndDate(e.target.value)}
