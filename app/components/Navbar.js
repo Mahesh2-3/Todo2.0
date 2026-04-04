@@ -22,23 +22,23 @@ const Navbar = ({ notifi }) => {
     <div className="w-full md:h-[10%] h-[7%] px-8 flex items-center bg-[var(--bg-card)] text-[var(--text-main)] justify-between rounded-md relative shadow-dark transition-colors">
       {/* Logo */}
       <div className="sm:w-[20%] sm:scale-[1] scale-[0.9] w-fit h-full font-bold">
-        <Image
+        {/* <Image
           width={95}
           height={95}
           priority
           className="h-full  w-auto"
           src="/Logo.png"
           alt="logo image"
-        />
+        /> */}
       </div>
 
       {/* Icons + Date */}
-      <div className="flex items-center sm:gap-6 gap-2">
+      <div className="flex items-center sm:gap-6 gap-1.5">
         {/* Theme Toggle */}
         {mounted && (
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 sm:scale-[1] scale-[0.8] cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
+            className="p-1.5 sm:p-2 sm:scale-[1] scale-[0.7] cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
           >
             {theme === "dark" ? <FaSun /> : <FaMoon />}
           </button>
@@ -50,13 +50,13 @@ const Navbar = ({ notifi }) => {
             setNotificationsOn(!NotificationsOn);
             notifi(NotificationsOn);
           }}
-          className="p-2 sm:scale-[1] scale-[0.8] cursor-pointer bg-primary text-white rounded-md"
+          className="p-1.5 sm:p-2 sm:scale-[1] scale-[0.7] cursor-pointer bg-primary text-white rounded-md"
         >
           <FaBell />
         </button>
-        <div className="text-right sm:text-base text-xs">
+        <div className="text-right sm:text-base text-[10px] leading-tight sm:leading-normal">
           <p className="font-semibold">{day}</p>
-          <p className="text-blue-600">{getToday()}</p>
+          <p className="text-primary">{getToday()}</p>
         </div>
       </div>
     </div>

@@ -6,10 +6,10 @@
   --color-primary: #FF6767;
   --color-secondary: #F8F8F8;
   --color-brick: #DADDE4;
-  --font-inter:var(--font-inter);
-  --shadow-dark:0px 2px 19px -10px #FF6767;
-  --breakpoint-lgg:860px;
-  --breakpoint-lg7:700px;
+  --font-inter: var(--font-inter);
+  --shadow-dark: 0px 2px 19px -10px #FF6767;
+  --breakpoint-lgg: 860px;
+  --breakpoint-lg7: 700px;
 }
 
 @layer base {
@@ -19,9 +19,11 @@
     --text-main: #1f2937;
     --text-muted: #6b7280;
     --border-color: #e5e7eb;
+    --bg-orange: #FF6767;
   }
 
   .dark {
+    --bg-orange: #c24747;
     --bg-main: #111827;
     --bg-card: #1f2937;
     --text-main: #f9fafb;
@@ -37,13 +39,17 @@
 }
 
 .hide-scrollbar {
-  overflow-y: scroll;              /* enables scrolling */
-  scrollbar-width: none;          /* Firefox */
-  -ms-overflow-style: none;       /* Internet Explorer 10+ */
+  overflow-y: scroll;
+  /* enables scrolling */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;                  /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 .react-datepicker__input-container input {
@@ -51,6 +57,6 @@
   padding: 0;
 }
 
-button{
+button {
   cursor: pointer;
 }

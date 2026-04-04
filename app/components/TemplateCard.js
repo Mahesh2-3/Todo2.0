@@ -19,13 +19,13 @@ const TemplateCard = ({ task, onEdit, onDelete }) => {
   }, []);
 
   return (
-    <div className="relative rounded-xl border border-gray-300 shadow-sm p-4 flex justify-between items-start w-full bg-white">
+    <div className="relative rounded-xl border border-(--border-color) shadow-sm p-4 flex justify-between items-start w-full bg-(--bg-card)">
       {/* Content */}
       <div className="flex-1">
-        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-all">
+        <h2 className="font-semibold sm:text-base text-sm line-clamp-1 break-all text-(--text-main)">
           {task.title}
         </h2>
-        <p className="text-gray-600 sm:text-sm text-xs line-clamp-2 break-all mt-1">
+        <p className="text-(--text-muted) sm:text-sm text-xs line-clamp-2 break-all mt-1">
           {task.description}
         </p>
       </div>
@@ -33,11 +33,11 @@ const TemplateCard = ({ task, onEdit, onDelete }) => {
       {/* Options */}
       <div className="relative ml-2" ref={optionsRef}>
         <BsThreeDotsVertical
-          className="text-gray-500 cursor-pointer"
+          className="text-(--text-muted) cursor-pointer"
           onClick={() => setShowOptionsMenu((prev) => !prev)}
         />
         {showOptionsMenu && (
-          <div className="absolute right-0 top-6 w-[120px] bg-white shadow-md p-2 rounded z-10 flex flex-col gap-2 text-sm">
+          <div className="absolute right-0 top-6 w-[120px] bg-(--bg-card) shadow-lg border border-(--border-color) p-2 rounded z-10 flex flex-col gap-2 text-sm text-(--text-main)">
             <div
               className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
               onClick={() => {

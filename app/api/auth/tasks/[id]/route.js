@@ -31,35 +31,43 @@ export async function PUT(req, context) {
       new: true,
     });
 
-    // Check if task status changed to Completed
-    if (oldTask && oldTask.status !== "Completed" && task.status === "Completed") {
+    // Check if task status changed to or from Completed
+    if (oldTask && oldTask.status !== task.status) {
         const today = getTodayDate();
         const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+        if (task.status === "Completed") {
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
 
-        let currentStreak = await Streak.findOne({ userId, date: todayStr });
-        let yesterdayStreak = await Streak.findOne({ userId, date: yesterdayStr });
-        let previousCount = yesterdayStreak ? yesterdayStreak.streakCount : 0;
+            let currentStreak = await Streak.findOne({ userId, date: todayStr });
+            let yesterdayStreak = await Streak.findOne({ userId, date: yesterdayStr });
+            let previousCount = yesterdayStreak ? yesterdayStreak.streakCount : 0;
 
-        if (!currentStreak) {
-            currentStreak = new Streak({
-                userId,
-                date: todayStr,
-                tasksCompleted: 1,
-                diaryWritten: false,
-                streakCount: previousCount + 1,
-                activityType: ["task"]
-            });
-        } else {
-            currentStreak.tasksCompleted += 1;
-            if (!currentStreak.activityType.includes("task")) {
-                currentStreak.activityType.push("task");
+            if (!currentStreak) {
+                currentStreak = new Streak({
+                    userId,
+                    date: todayStr,
+                    tasksCompleted: 1,
+                    diaryWritten: false,
+                    streakCount: previousCount + 1,
+                    activityType: ["task"]
+                });
+            } else {
+                currentStreak.tasksCompleted += 1;
+                if (!currentStreak.activityType.includes("task")) {
+                    currentStreak.activityType.push("task");
+                }
+            }
+            await currentStreak.save();
+        } else if (oldTask.status === "Completed") {
+            let currentStreak = await Streak.findOne({ userId, date: todayStr });
+            if (currentStreak && currentStreak.tasksCompleted > 0) {
+                currentStreak.tasksCompleted -= 1;
+                await currentStreak.save();
             }
         }
-        await currentStreak.save();
     }
 
     if (!task) {

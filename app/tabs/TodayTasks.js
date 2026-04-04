@@ -207,7 +207,7 @@ const DailyTasks = () => {
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <div className="lgg:text-3xl text-ellipsis overflow-hidden sm:text-2xl text-lg flex justify-start whitespace-nowrap items-center gap-2 font-semibold">
+      <div className="lgg:text-3xl text-ellipsis sm:text-2xl text-lg flex justify-start whitespace-nowrap items-center gap-2 font-semibold">
         Welcome back,{" "}
         <span className="text-primary relative text-ellipsis overflow-hidden -top-0.5 lgg:text-4xl sm:text-3xl text-xl">
           {session?.user.username}
@@ -259,7 +259,7 @@ const DailyTasks = () => {
           </div>
         </div>
         {(tab == "Both" || tab == "Tasks") && (
-          <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] shadow-md border border-brick sm:p-6 p-3 relative rounded-2xl">
+          <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] shadow-md border border-(--border-color) bg-(--bg-card) text-(--text-main) sm:p-6 p-3 relative rounded-2xl">
             <div
               className="absolute lg7:bottom-10 bottom-20 right-3 w-[50px] h-[50px] flex items-center justify-center bg-primary rounded-full cursor-pointer z-10"
               onClick={() => setShowNewTask(true)}
@@ -284,7 +284,7 @@ const DailyTasks = () => {
                     To-Do
                   </span>
                 </div>
-                <span className="flex items-center text-sm text-gray-600 justify-center gap-2">
+                <span className="flex items-center text-sm text-(--text-muted) justify-center gap-2">
                   {getTodayDate().toLocaleDateString()} • today
                 </span>
               </div>
@@ -333,7 +333,7 @@ const DailyTasks = () => {
         )}
         {(tab == "Both" || tab == "Status") && (
           <div className="lgg:w-1/2 w-full mx-auto lg7:h-full h-[93%] overflow-y-scroll hide-scrollbar flex flex-col gap-4">
-            <div className="sm:h-[40%] h-[30%] w-full relative border border-brick shadow-md sm:p-6 p-3 rounded-2xl">
+            <div className="sm:h-[40%] h-[30%] w-full relative border border-(--border-color) bg-(--bg-card) text-(--text-main) shadow-md sm:p-6 p-3 rounded-2xl">
               <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base @min-xs:text-[14px] text-[12px] mb-4 flex items-center gap-2">
                 <Image width={24} height={24} src="/Task_complete.png" alt="" />{" "}
                 Task Status
@@ -357,11 +357,11 @@ const DailyTasks = () => {
               </div>
             </div>
 
-            <div className="flex h-[67%]  border border-brick shadow-md bg-white w-full p-4 pb-8 rounded-2xl relative overflow-y-scroll hide-scrollbar  flex-col gap-4">
+            <div className="flex h-[67%] border border-(--border-color) shadow-md bg-(--bg-card) text-(--text-main) w-full p-4 pb-8 rounded-2xl relative overflow-y-scroll hide-scrollbar flex-col gap-4">
               <div className="flex justify-end w-full">
                 <div className="relative w-48 mb-4">
                   <div
-                    className="bg-white text-sm px-4 py-2 rounded-md cursor-pointer flex justify-between items-center"
+                    className="bg-(--bg-main) border border-(--border-color) text-sm px-4 py-2 rounded-md cursor-pointer flex justify-between items-center"
                     onClick={() => setOpen(!open)}
                   >
                     <div
@@ -387,7 +387,7 @@ const DailyTasks = () => {
                     </svg>
                   </div>
                   {open && (
-                    <div className="absolute w-full mt-1 bg-white rounded-md shadow-md z-10 text-sm">
+                    <div className="absolute w-full mt-1 bg-(--bg-card) border border-(--border-color) rounded-md shadow-lg z-10 text-sm">
                       {statusOptions.map((status) => (
                         <div
                           key={status.status}
@@ -395,9 +395,9 @@ const DailyTasks = () => {
                             setSelectedStatus(status);
                             setOpen(false);
                           }}
-                          className={`px-4 py-2 flex items-center gap-4 cursor-pointer ${
+                          className={`px-4 py-2 flex items-center gap-4 cursor-pointer hover:bg-(--bg-main) ${
                             selectedStatus.status === status.status
-                              ? "bg-gray-100"
+                              ? "bg-(--bg-main)"
                               : ""
                           }`}
                         >
