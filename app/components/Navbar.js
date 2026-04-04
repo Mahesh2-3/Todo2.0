@@ -5,10 +5,6 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import { getToday, getTodayDate } from "../lib/dateUtils";
 import { useEffect } from "react";
-import axios from "axios";
-import useSWR from "swr";
-
-const fetcher = url => axios.get(url).then(res => res.data);
 
 const Navbar = ({ notifi }) => {
   const [NotificationsOn, setNotificationsOn] = useState(true);
@@ -18,9 +14,6 @@ const Navbar = ({ notifi }) => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const { data: streakData } = useSWR("/api/auth/streak", fetcher, { refreshInterval: 10000 });
-  const streakCount = streakData?.streakCount || 0;
 
   const today = getTodayDate();
   const day = today.toLocaleDateString("en-US", { weekday: "long" });
@@ -51,10 +44,6 @@ const Navbar = ({ notifi }) => {
           </button>
         )}
 
-        {/* Streak Display */}
-        <div className="flex items-center gap-1 font-bold text-orange-500 sm:text-lg text-sm bg-orange-100 px-3 py-1 rounded-full shadow-sm">
-          🔥 {streakCount}
-        </div>
         <button
           aria-label="Toggle notifications"
           onClick={() => {
