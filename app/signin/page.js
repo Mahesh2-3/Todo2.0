@@ -4,7 +4,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import TopLoader from "../components/TopLoader";
 import { useLoading } from "../context/LoadingContext";
 import { FcGoogle } from "react-icons/fc";
 
@@ -73,7 +72,6 @@ const SignIn = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center bg-gradient-to-r from-blue-50 to-indigo-50">
-      <TopLoader />
       <div className="text-5xl font-bold border-b px-4 font-inter flex items-center gap-2">
         <div>
           Todo <span className="text-primary">2</span>.
