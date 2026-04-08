@@ -10,7 +10,7 @@ import { FaChevronDown, FaRegClipboard } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import StatusChart from "../components/StatusChart";
 import { useLoading } from "../context/LoadingContext";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import TaskSkeleton from "../components/TaskSkeleton";
 import { useSession } from "next-auth/react";
 
 const DATE_OPTIONS = ["Total", "Today", "Yesterday"];
@@ -248,21 +248,16 @@ const Overview = () => {
                       onDelete={() => deleteTask(t._id)}
                     />
                   ))
+                ) : loading ? (
+                  <div className="flex flex-col gap-4">
+                    <TaskSkeleton />
+                    <TaskSkeleton />
+                  </div>
                 ) : (
                   <div className="h-full">
-                    {loading ? (
-                      <span className="flex flex-col items-center justify-center gap-3 h-full">
-                        <AiOutlineLoading3Quarters
-                          className="animate-spin"
-                          size={30}
-                        />{" "}
-                        Loading...
-                      </span>
-                    ) : (
-                      <span className="flex flex-col items-center justify-center gap-3 h-full">
-                        <FaRegClipboard size={30} /> No Tasks Expiring Tomorrow
-                      </span>
-                    )}
+                    <span className="flex flex-col items-center justify-center gap-3 h-full">
+                      <FaRegClipboard size={30} /> No Tasks Expiring Tomorrow
+                    </span>
                   </div>
                 )}
               </div>
@@ -344,21 +339,17 @@ const Overview = () => {
                     onDelete={() => deleteTask(t._id)}
                   />
                 ))
+              ) : loading ? (
+                <div className="flex flex-col gap-4">
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                </div>
               ) : (
                 <div className="h-full">
-                  {loading ? (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <AiOutlineLoading3Quarters
-                        className="animate-spin"
-                        size={30}
-                      />{" "}
-                      Loading...
-                    </span>
-                  ) : (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <FaRegClipboard size={30} /> No Tasks Found
-                    </span>
-                  )}
+                  <span className="flex flex-col items-center justify-center gap-3 h-full">
+                    <FaRegClipboard size={30} /> No Tasks Found
+                  </span>
                 </div>
               )}
             </div>

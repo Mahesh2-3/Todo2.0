@@ -16,7 +16,7 @@ import NewTask from "../components/Newtask";
 import { useSearch } from "../context/SearchContext";
 import Image from "next/image";
 import { useLoading } from "../context/LoadingContext";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import TaskSkeleton from "../components/TaskSkeleton";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
@@ -276,37 +276,35 @@ const ScheduledTasks = () => {
                 </div>
               </div>
 
-              {tasks.length == 0 && (
-                <div className="w-full h-full">
-                  {loading ? (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <AiOutlineLoading3Quarters
-                        className="animate-spin"
-                        size={30}
-                      />{" "}
-                      Loading...
-                    </span>
-                  ) : (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <FaRegClipboard size={30} /> No Tasks Found
-                    </span>
+              {loading ? (
+                <div className="flex flex-col gap-4">
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                </div>
+              ) : (
+                <>
+                  {tasks.length == 0 && (
+                    <div className="w-full h-full">
+                      <span className="flex flex-col items-center justify-center gap-3 h-full">
+                        <FaRegClipboard size={30} /> No Tasks Found
+                      </span>
+                    </div>
                   )}
-                </div>
-              )}
-              {tasks.filter((task) =>
-                task.title.toLowerCase().includes(searchQuery.toLowerCase()),
-              ).length == 0 && (
-                <div className="flex flex-col items-center justify-center gap-3 h-full">
-                  <FaRegClipboard size={30} /> No Tasks Found
-                </div>
-              )}
+                  {tasks.filter((task) =>
+                    task.title.toLowerCase().includes(searchQuery.toLowerCase()),
+                  ).length == 0 && tasks.length > 0 && (
+                    <div className="flex flex-col items-center justify-center gap-3 h-full">
+                      <FaRegClipboard size={30} /> No Tasks Found
+                    </div>
+                  )}
 
-              {/* Task Cards */}
-              {tasks
-                .filter((task) =>
-                  task.title.toLowerCase().includes(searchQuery.toLowerCase()),
-                )
-                .map((task, index) => (
+                  {/* Task Cards */}
+                  {tasks
+                    .filter((task) =>
+                      task.title.toLowerCase().includes(searchQuery.toLowerCase()),
+                    )
+                    .map((task, index) => (
                   <TaskCard
                     key={index}
                     task={task}
@@ -329,6 +327,8 @@ const ScheduledTasks = () => {
                     }}
                   />
                 ))}
+                </>
+              )}
             </div>
           </div>
         )}
@@ -429,7 +429,13 @@ const ScheduledTasks = () => {
                   )}
                 </div>
               </div>
-              {(() => {
+              {loading ? (
+                <div className="flex flex-col gap-4 w-full">
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                </div>
+              ) : (() => {
                 const filteredTasks = tasks.filter(
                   (task) => task.status === selectedStatus.status,
                 );
@@ -437,19 +443,9 @@ const ScheduledTasks = () => {
                 if (filteredTasks.length === 0) {
                   return (
                     <div className="h-full w-full">
-                      {loading ? (
-                        <span className="flex flex-col items-center justify-center gap-3 h-full">
-                          <AiOutlineLoading3Quarters
-                            className="animate-spin"
-                            size={30}
-                          />{" "}
-                          Loading...
-                        </span>
-                      ) : (
-                        <span className="flex flex-col items-center justify-center gap-3 h-full">
-                          <FaRegClipboard size={30} /> No Tasks Found
-                        </span>
-                      )}
+                      <span className="flex flex-col items-center justify-center gap-3 h-full">
+                        <FaRegClipboard size={30} /> No Tasks Found
+                      </span>
                     </div>
                   );
                 }

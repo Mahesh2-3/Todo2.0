@@ -17,7 +17,7 @@ import NewTask from "../components/Newtask";
 import { useSearch } from "../context/SearchContext";
 import Image from "next/image";
 import { useLoading } from "../context/LoadingContext";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import TaskSkeleton from "../components/TaskSkeleton";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { getToday, getTodayDate } from "../lib/dateUtils";
@@ -289,23 +289,19 @@ const DailyTasks = () => {
                 </span>
               </div>
 
-              {tasks?.filter((t) =>
+              {loading ? (
+                <div className="flex flex-col gap-4">
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                </div>
+              ) : tasks?.filter((t) =>
                 t.title.toLowerCase().includes(searchQuery.toLowerCase()),
               ).length === 0 ? (
                 <div className="h-full sm:text-base text-xs">
-                  {loading ? (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <AiOutlineLoading3Quarters
-                        className="animate-spin"
-                        size={30}
-                      />{" "}
-                      Loading...
-                    </span>
-                  ) : (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <FaRegClipboard size={30} /> No Tasks Found
-                    </span>
-                  )}
+                  <span className="flex flex-col items-center justify-center gap-3 h-full">
+                    <FaRegClipboard size={30} /> No Tasks Found
+                  </span>
                 </div>
               ) : (
                 tasks
@@ -414,22 +410,18 @@ const DailyTasks = () => {
                 </div>
               </div>
 
-              {tasks?.filter((task) => task.status === selectedStatus.status)
+              {loading ? (
+                <div className="flex flex-col gap-4">
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                  <TaskSkeleton />
+                </div>
+              ) : tasks?.filter((task) => task.status === selectedStatus.status)
                 .length === 0 ? (
                 <div className="h-full">
-                  {loading ? (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <AiOutlineLoading3Quarters
-                        className="animate-spin"
-                        size={30}
-                      />{" "}
-                      Loading...
-                    </span>
-                  ) : (
-                    <span className="flex flex-col items-center justify-center gap-3 h-full">
-                      <FaRegClipboard size={30} /> No Tasks to View
-                    </span>
-                  )}
+                  <span className="flex flex-col items-center justify-center gap-3 h-full">
+                    <FaRegClipboard size={30} /> No Tasks to View
+                  </span>
                 </div>
               ) : (
                 tasks

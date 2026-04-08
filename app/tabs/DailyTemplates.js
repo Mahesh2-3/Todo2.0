@@ -7,7 +7,7 @@ import { FaPlus, FaRegClipboard } from "react-icons/fa";
 import NewTask from "../components/Newtask";
 import { useSearch } from "../context/SearchContext";
 import { useLoading } from "../context/LoadingContext";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import TaskSkeleton from "../components/TaskSkeleton";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
@@ -111,21 +111,17 @@ const DailyTemplates = () => {
           </div>
 
           <div className="overflow-y-scroll hide-scrollbar space-y-4 h-full p-2">
-            {tasks.length === 0 ? (
+            {loading ? (
+              <div className="flex flex-col gap-4">
+                <TaskSkeleton />
+                <TaskSkeleton />
+                <TaskSkeleton />
+              </div>
+            ) : tasks.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-3">
-                {loading ? (
-                  <>
-                    <AiOutlineLoading3Quarters
-                      className="animate-spin"
-                      size={30}
-                    />
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    <FaRegClipboard size={30} /> No Templates Found
-                  </>
-                )}
+                <>
+                  <FaRegClipboard size={30} /> No Templates Found
+                </>
               </div>
             ) : (
               tasks

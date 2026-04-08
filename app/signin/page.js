@@ -4,7 +4,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import TopLoader from "../components/TopLoader";
 import { useLoading } from "../context/LoadingContext";
 import { FcGoogle } from "react-icons/fc";
 
@@ -17,11 +16,11 @@ const SignIn = () => {
     if (status === "authenticated") {
       router.replace("/");
     }
-  }, [status, router]);
+}, [status, router]);
 
   useEffect(() => {
     setLoading(false);
-  }, [setLoading]);
+}, [setLoading]);
 
   const handleGoogleLogin = async () => {
     setLoading(true);

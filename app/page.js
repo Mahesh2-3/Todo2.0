@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Navbar from "./components/Navbar";
-import TopLoader from "./components/TopLoader";
 import dynamic from "next/dynamic";
 
 const Body = dynamic(() => import("./components/Body"), { ssr: false });
@@ -23,7 +22,7 @@ const Home = () => {
   }, [status, router]);
 
   if (status === "loading") {
-    return <TopLoader />;
+    return null;
   }
 
   if (!session?.user) return null;
