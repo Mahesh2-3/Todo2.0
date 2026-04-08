@@ -85,15 +85,15 @@ const Dashboard = () => {
           <h2 className="sm:text-xl text-sm font-semibold text-[var(--text-main)]">
             Completion Rate ({range.charAt(0).toUpperCase() + range.slice(1)})
           </h2>
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-(--bg-main) border border-(--border-color) rounded-lg p-1">
             {["weekly", "monthly", "yearly"].map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
                 className={`px-3 py-1 text-[10px] sm:text-sm rounded-md transition-all ${
                   range === r
-                    ? "bg-white text-primary shadow-sm font-medium"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "bg-(--bg-card) text-primary shadow-sm font-medium"
+                    : "text-(--text-muted) hover:text-(--text-main)"
                 }`}
               >
                 {r.charAt(0).toUpperCase() + r.slice(1)}

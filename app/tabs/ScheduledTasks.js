@@ -248,7 +248,7 @@ const ScheduledTasks = () => {
           </div>
         </div>
         {(tab == "Both" || tab == "Tasks") && (
-          <div className="lgg:w-1/2 w-full sm:h-full h-[93%] shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
+          <div className="lgg:w-1/2 w-full sm:h-full h-[93%] bg-(--bg-card) text-(--text-main) border border-(--border-color) shadow-dark p-6 relative rounded-l-2xl rounded-br-2xl">
             {/* Floating Plus Button - stays fixed */}
             <div
               className="absolute w-[50px] z-10 cursor-pointer flex justify-center items-center h-[50px] p-3 rounded-full bg-primary sm:bottom-10 bottom-20 right-3"
@@ -270,7 +270,7 @@ const ScheduledTasks = () => {
                     <span className="text-primary">To</span>-Do
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 flex items-center">
+                <div className="text-sm text-(--text-muted) flex items-center">
                   {day}-{month}
                   <span className="mx-1 text-xs align-middle">•</span>Today
                 </div>
@@ -335,7 +335,7 @@ const ScheduledTasks = () => {
         {(tab == "Both" || tab == "Status") && (
           <div className="lgg:w-1/2 w-full sm:h-full h-[93%] flex flex-col gap-4">
             {/* Status Summary */}
-            <div className="sm:h-[40%] h-[30%] relative shadow-dark p-6 rounded-t-2xl flex flex-col">
+            <div className="sm:h-[40%] h-[30%] bg-(--bg-card) text-(--text-main) border border-(--border-color) relative shadow-dark p-6 rounded-t-2xl flex flex-col">
               <h3 className="text-primary sm:relative absolute sm:top-0 top-4 sm:left-0 left-6 font-semibold sm:text-base text-[14px] mb-4 flex items-center gap-2">
                 <Image width={24} height={24} src="/Task_complete.png" alt="" />{" "}
                 Task Status
@@ -367,19 +367,19 @@ const ScheduledTasks = () => {
             </div>
 
             {/* Filtered Task List */}
-            <div className="sm:h-[60%] h-[70%] shadow-dark p-4 rounded-b-2xl relative  flex flex-col overflow-y-scroll items-start gap-4 hide-scrollbar">
+            <div className="sm:h-[60%] h-[70%] bg-(--bg-card) text-(--text-main) border border-(--border-color) shadow-dark p-4 rounded-b-2xl relative  flex flex-col overflow-y-scroll items-start gap-4 hide-scrollbar">
               {/* Custom Dropdown */}
               <div className="flex justify-end w-full">
                 <div className="relative w-48 mb-4">
                   <div
-                    className="bg-white text-sm text-gray-700 px-4 py-2 rounded-md cursor-pointer select-none flex justify-between items-center"
+                    className="bg-(--bg-main) border border-(--border-color) text-sm text-(--text-main) px-4 py-2 rounded-md cursor-pointer select-none flex justify-between items-center"
                     onClick={() => setOpen((prev) => !prev)}
                     role="button"
                     tabIndex={0}
                     aria-label="Filter by Status"
                   >
                     <div
-                      className={`w-[20px] h-[20px] rounded-full border-2 ${selectedStatus.color} bg-white flex items-center justify-center shadow`}
+                      className={`w-[20px] h-[20px] rounded-full border-2 ${selectedStatus.color} bg-(--bg-card) flex items-center justify-center shadow`}
                     >
                       {selectedStatus.icon}
                     </div>
@@ -403,7 +403,7 @@ const ScheduledTasks = () => {
 
                   {/* Dropdown Options */}
                   {open && (
-                    <div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-md text-sm">
+                    <div className="absolute z-10 w-full mt-1 bg-(--bg-card) border border-(--border-color) rounded-md shadow-lg text-sm">
                       {statusOptions.map((status) => (
                         <div
                           key={status.status}
@@ -411,14 +411,14 @@ const ScheduledTasks = () => {
                             setSelectedStatus(status);
                             setOpen(false);
                           }}
-                          className={`px-4 py-2 flex items-center gap-6 hover:bg-gray-100 cursor-pointer ${
+                          className={`px-4 py-2 flex items-center gap-6 hover:bg-(--bg-main) cursor-pointer ${
                             selectedStatus.status === status.status
-                              ? "bg-gray-100"
+                              ? "bg-(--bg-main)"
                               : ""
                           }`}
                         >
                           <div
-                            className={`w-[20px] h-[20px] rounded-full border-2 ${status.color} bg-white flex items-center justify-center shadow`}
+                            className={`w-[20px] h-[20px] rounded-full border-2 ${status.color} bg-(--bg-card) flex items-center justify-center shadow`}
                           >
                             {status.icon}
                           </div>

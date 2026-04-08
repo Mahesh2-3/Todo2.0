@@ -102,7 +102,7 @@ const DailyTemplates = () => {
           />
         )}
 
-        <div className="w-full h-full shadow-md border border-brick sm:p-6 p-3 relative rounded-2xl">
+        <div className="w-full h-full shadow-md border border-(--border-color) bg-(--bg-card) text-(--text-main) sm:p-6 p-3 relative rounded-2xl">
           <div
             className="absolute bottom-10 right-3 w-[50px] h-[50px] flex items-center justify-center bg-primary rounded-full cursor-pointer z-10"
             onClick={() => setShowNewTask(true)}

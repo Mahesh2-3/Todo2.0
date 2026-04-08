@@ -195,12 +195,12 @@ const Overview = () => {
         {(tab == "Status" || tab == "Both") && (
           <div className="lgg:w-1/2 w-full h-full  flex flex-col gap-4">
             {/* Progress Summary */}
-            <div className="sm:h-[40%] h-[30%] shadow-dark sm:p-6 p-2 rounded-2xl">
+            <div className="sm:h-[40%] h-[30%] bg-(--bg-card) text-(--text-main) border border-(--border-color) shadow-dark sm:p-6 p-2 rounded-2xl">
               <div className="flex items-center justify-between">
                 <h3 className="text-primary sm:relative absolute font-semibold sm:text-base text-sm sm:mb-4 px-4 pt-4">
                   Task Summary
                 </h3>
-                <p className="text-gray-500 text-sm px-4">
+                <p className="text-(--text-muted) text-sm px-4">
                   Count : <b>{counts.total}</b>
                 </p>
               </div>
@@ -230,8 +230,8 @@ const Overview = () => {
             </div>
 
             {/* Expiring */}
-            <div className="sm:h-[60%] h-[70%] shadow-dark p-4 rounded-2xl space-y-4 pb-20 relative">
-              <h3 className="absolute top-6 right-4 bg-[var(--bg-card)] p-4 z-10 text-red-500 font-semibold">
+            <div className="sm:h-[60%] h-[70%] bg-(--bg-card) border border-(--border-color) shadow-dark p-4 rounded-2xl space-y-4 pb-20 relative">
+              <h3 className="absolute top-6 right-4 bg-(--bg-card) p-4 z-10 text-primary font-semibold border-l-4 border-primary shadow-sm rounded-l-md">
                 Tasks Expiring Tomorrow
               </h3>
               <div className="pt-18 h-full flex flex-col gap-4 overflow-y-scroll hide-scrollbar">
@@ -266,9 +266,9 @@ const Overview = () => {
         )}
         {/* LEFT ─ Filters + List ──────────────────────────── */}
         {(tab == "Tasks" || tab == "Both") && (
-          <div className="lgg:w-1/2 w-full h-full pb-20 shadow-dark px-6 pt-6 rounded-l-2xl rounded-br-2xl relative">
+          <div className="lgg:w-1/2 w-full h-full pb-20 bg-(--bg-card) text-(--text-main) border border-(--border-color) shadow-dark px-6 pt-6 rounded-l-2xl rounded-br-2xl relative">
             {/* Filters */}
-            <div className="absolute top-6 right-4 flex gap-4 p-2 z-10 bg-[var(--bg-main)]">
+            <div className="absolute top-6 right-4 flex gap-4 p-2 z-10 bg-(--bg-card)">
               {/* Date Filter */}
               <Dropdown
                 label={
@@ -368,7 +368,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
       role="button"
       tabIndex={0}
       aria-label="Dropdown"
-      className="flex items-center justify-between px-4 py-2 border border-[var(--border-color)] sm:text-base text-sm rounded cursor-pointer bg-[var(--bg-card)] text-[var(--text-main)]"
+      className="flex items-center justify-between px-4 py-2 border border-(--border-color) sm:text-base text-sm rounded cursor-pointer bg-(--bg-card) text-(--text-main)"
     >
       <span>{label}</span>
       <FaChevronDown
@@ -376,7 +376,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
       />
     </div>
     {open && (
-      <div className="absolute mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow rounded z-10 text-[var(--text-main)]">
+      <div className="absolute mt-1 w-full bg-(--bg-card) border border-(--border-color) shadow rounded z-10 text-(--text-main)">
         {children}
       </div>
     )}
@@ -384,7 +384,7 @@ const Dropdown = ({ label, open, setOpen, children }) => (
 );
 
 const Item = ({ children, onClick }) => (
-  <div className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" onClick={onClick}>
+  <div className="px-4 py-2 hover:bg-(--bg-main) cursor-pointer" onClick={onClick}>
     {children}
   </div>
 );

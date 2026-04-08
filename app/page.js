@@ -29,7 +29,8 @@ const Home = () => {
 
   return (
     <div className="w-screen font-inter min-h-screen overflow-y-auto hide-scrollbar">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
+      <TopLoader />
+      <div className="absolute inset-0 -z-10 h-full w-full bg-(--bg-main) bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary opacity-20 blur-[100px]"></div>
       </div>{" "}
       <div className="2xl:w-[1500px] w-full relative h-screen flex flex-col justify-between overflow-y-auto mx-auto hide-scrollbar">

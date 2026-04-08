@@ -27,7 +27,7 @@ const DeleteAccount = ({ setdeleteOpen }) => {
     <div className="w-full h-full bg-black/10 z-[9999] fixed inset-0 backdrop-blur-sm flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-10 rounded-xl relative shadow-lg w-full max-w-md"
+        className="bg-(--bg-card) p-10 rounded-xl relative shadow-lg w-full max-w-md text-(--text-main)"
       >
         <button
           onClick={() => setdeleteOpen(false)}
@@ -35,19 +35,19 @@ const DeleteAccount = ({ setdeleteOpen }) => {
         >
           ✕
         </button>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+        <h1 className="text-2xl font-semibold text-(--text-main) mb-6 text-center">
           Delete Your Account
         </h1>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className="block text-(--text-main) font-medium mb-1">
             Type: <span className="text-red-500">delete my account</span>
           </label>
           <input
             type="text"
             value={confirmationText}
             onChange={(e) => setConfirmationText(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full border border-(--border-color) bg-(--bg-main) text-(--text-main) rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
             placeholder='Type "delete my account"'
           />
         </div>

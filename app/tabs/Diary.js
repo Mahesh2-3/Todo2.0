@@ -143,14 +143,14 @@ const Diary = () => {
   }, [session?.user, saved]); // Re-fetch dates when a diary entry is saved
 
   return (
-    <div className="w-full h-full p-6 shadow-dark rounded-2xl bg-[#f7f7f7] flex flex-col">
+    <div className="w-full h-full p-6 shadow-dark rounded-2xl bg-(--bg-card) text-(--text-main) border border-(--border-color) flex flex-col">
       {/* Top Heading */}
       <div className="w-full relative text-primary flex items-center justify-center gap-2 pb-4">
         <FaBookOpen className="text-primary font-bold text-3xl" />
         Diary
         <div className="absolute right-0 flex items-center gap-2">
           {isSaving && (
-            <span className="text-xs text-gray-400 italic">Saving...</span>
+            <span className="text-xs text-(--text-muted) italic">Saving...</span>
           )}
           <button
             onClick={() => handleSave(true)}
@@ -211,7 +211,7 @@ const Diary = () => {
         >
           <IoIosArrowForward
             className={`text-xl hover:scale-110 ${
-              isToday() ? "text-gray-300 cursor-not-allowed" : "cursor-pointer"
+              isToday() ? "text-(--text-muted) opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           />
         </button>
@@ -253,7 +253,7 @@ const Diary = () => {
           />
 
           <div className="w-full mt-4 text-right pr-2">
-            <p className="text-sm font-semibold text-gray-400 italic">
+            <p className="text-sm font-semibold text-(--text-muted) italic">
               — {session?.user?.username || "Anonymous"} | {formatDate(date)}
             </p>
           </div>
