@@ -20,10 +20,12 @@ export const formatDate = (date) => {
 
 export const getDatesBetween = (startDateStr, endDateStr, maxDays = 30) => {
   const dates = [];
-  // Parse date string (YYYY-MM-DD) as local midnight by appending T00:00:00
-  // to avoid standard Date parsing treating it as UTC.
-  const start = new Date(startDateStr + "T00:00:00");
-  const end = new Date(endDateStr + "T00:00:00");
+  const start = new Date(startDateStr);
+  const end = new Date(endDateStr);
+
+  // Set time to 0 to avoid local timezone offset issues
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
 
   let current = new Date(start);
   let daysAdded = 0;
