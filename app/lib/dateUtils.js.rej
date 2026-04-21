@@ -1,0 +1,23 @@
+--- app/lib/dateUtils.js
++++ app/lib/dateUtils.js
+@@ -17,14 +17,15 @@
+
+ export const getDatesBetween = (startDateStr, endDateStr, maxDays = 30) => {
+   const dates = [];
+-  const start = new Date(startDateStr);
+-  const end = new Date(endDateStr);
++  // Parse date string (YYYY-MM-DD) as local midnight by appending T00:00:00
++  // to avoid standard Date parsing treating it as UTC.
++  const start = new Date(startDateStr + "T00:00:00");
++  const end = new Date(endDateStr + "T00:00:00");
+
+-  // Set time to 0 to avoid local timezone offset issues
+-  start.setHours(0, 0, 0, 0);
+-  end.setHours(0, 0, 0, 0);
++  // Using an iterative local date progression
++  let current = new Date(start);
+   let daysAdded = 0;
+
+   // Capping the maximum missed days to prevent massive inserts
+   // if a template is very old
+   while (current <= end && daysAdded < maxDays) {

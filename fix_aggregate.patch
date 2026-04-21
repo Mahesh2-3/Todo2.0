@@ -1,0 +1,19 @@
+--- app/api/auth/tasks/route.js
++++ app/api/auth/tasks/route.js
+@@ -10,6 +10,7 @@
+ import { getServerSession } from "next-auth";
+ import { authOptions } from "@/app/lib/auth";
+
+ import { getToday, getDatesBetween } from "@/app/lib/dateUtils";
++import mongoose from "mongoose";
+
+ // =========================
+@@ -44,7 +45,7 @@
+       const lastInstances = await Task.aggregate([
+         {
+           $match: {
+-            userId,
++            userId: new mongoose.Types.ObjectId(userId),
+             templateId: { $in: templateIds },
+             isTemplate: false
+           }

@@ -6,7 +6,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 
 import { getToday, getDatesBetween } from "@/app/lib/dateUtils";
-import mongoose from "mongoose";
 
 // =========================
 // ✅ GET TASKS
@@ -45,7 +44,7 @@ export async function GET(req) {
       const lastInstances = await Task.aggregate([
         {
           $match: {
-            userId: new mongoose.Types.ObjectId(userId),
+            userId,
             templateId: { $in: templateIds },
             isTemplate: false
           }
@@ -69,7 +68,7 @@ export async function GET(req) {
         const lastStartDate = lastInstanceMap.get(template._id.toString());
 
         if (lastStartDate) {
-          const lastDate = new Date(lastStartDate + "T00:00:00");
+          const lastDate = new Date(lastStartDate);
           // Start backfilling from the day after the last instance
           lastDate.setDate(lastDate.getDate() + 1);
           startDateObj = lastDate;
